@@ -1,0 +1,11 @@
+{
+  "name": "Valkyrie",
+  "main": "app.js",
+  "author": "scarletsky",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~3.8.0",
+    "mongoose": "^3.8.11",
+    "bcrypt": "^0.7.8"
+  }
+}
