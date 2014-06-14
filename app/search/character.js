@@ -1,4 +1,5 @@
 var Character = require('../models').Character;
+var utils = require('./utils');
 
 exports.getCharacters = function (req, res) {
   Character
@@ -36,11 +37,31 @@ exports.getCharactersByKeyword = function (req, res) {
 
 exports.getCharactersBySourceId = function (req, res) {
   var sourceId = req.params.sourceId;
+  var paginationId = req.query.paginationId;
 
-  Character
-    .find({source_id: sourceId})
-    .limit(10)
-    .exec(function (err, characters) {
-      return res.send(characters);
-    });
+  var options = {
+    targetCriteria: {
+      source_id: sourceId 
+    },
+    nextPageCriteria: {
+      source_id: sourceId,
+      _id: {
+        $gt: paginationId
+      }
+    },
+    prevPageCriteria: {
+      source_id: sourceId,
+      _id: {
+        $lt: paginationId
+      }
+    },
+    otherPageCriteria: {
+      source_id: sourceId,
+      _id: {
+        $gte: paginationId
+      }
+    }
+  };
+
+  return utils.paging(req, res, Character, options);
 };
