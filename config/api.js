@@ -1,8 +1,8 @@
-var user = require('../app/search/user');
-var source = require('../app/search/source');
-var character = require('../app/search/character');
-var quote = require('../app/search/quote');
-var search = require('../app/search/search');
+var user = require('../app/controllers/user');
+var source = require('../app/controllers/source');
+var character = require('../app/controllers/character');
+var quote = require('../app/controllers/quote');
+var search = require('../app/controllers/search');
 
 module.exports = function (app) {
   var apiPrefix = '/api';
