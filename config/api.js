@@ -12,7 +12,9 @@ module.exports = function (app) {
   app.get(apiPrefix + '/users/:userId', user.getUserById);
 
   // sources
+  app.get(apiPrefix + '/source/check', source.checkSource);
   app.get(apiPrefix + '/sources', source.getSources);
+  app.post(apiPrefix + '/sources', source.postSource);
   app.get(apiPrefix + '/sources/:sourceId', source.getSourceById);
   app.get(apiPrefix + '/sources/:sourceId/characters', character.getCharactersBySourceId);
 

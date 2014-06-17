@@ -1,5 +1,27 @@
 var Source = require('../models').Source;
 
+exports.checkSource = function (req, res) {
+  var name = req.query.name;
+  var alias = req.query.alias ? req.query.alias.split(',') : [''];
+
+  Source
+    .findOne({
+      $or: [
+        {name: name},
+        {alias: {
+          $in: alias
+        }}
+      ]
+    })
+    .exec(function (err, source) {
+      if (source) {
+        return res.send({exist: true});
+      } else {
+        return res.send({exist: false});
+      }
+    });
+};
+
 exports.getSources = function (req, res) {
   Source
     .find()
@@ -7,6 +29,19 @@ exports.getSources = function (req, res) {
     .exec(function (err, sources) {
       return res.send(sources);
     });
+};
+
+exports.postSource = function (req, res) {
+  var obj = {
+    name: req.param('name'),
+    alias: req.param('alias'),
+    info: req.param('info')
+  };
+
+  var source = new Source(obj);
+  source.save(function (err, source) {
+    return res.send(source);
+  });
 };
 
 exports.getSourceById = function (req, res) {
