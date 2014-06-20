@@ -19,7 +19,9 @@ module.exports = function (app) {
   app.get(apiPrefix + '/sources/:sourceId/characters', character.getCharactersBySourceId);
 
   // characters
+  app.get(apiPrefix + '/character/check', character.checkCharacter);
   app.get(apiPrefix + '/characters', character.getCharacters);
+  app.post(apiPrefix + '/characters', character.postCharacter)
   app.get(apiPrefix + '/characters/:characterId', character.getCharacterById);
   app.get(apiPrefix + '/characters/:characterId/quotes', quote.getQuotesByCharacterId);
 

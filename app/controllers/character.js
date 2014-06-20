@@ -1,6 +1,30 @@
 var Character = require('../models').Character;
 var utils = require('./utils');
 
+exports.checkCharacter = function (req, res) {
+  var name = req.query.name;
+  var nickname = req.query.nickname ? req.query.nickname.split(',') : [];
+  var sourceId = req.query.sourceId;
+
+  Character
+    .findOne({
+      source_id: sourceId,
+      $or: [
+        {name: name},
+        {nickname: {
+          $in: nickname
+        }}
+      ]
+    })
+    .exec(function (err, character) {
+      if (character) {
+        return res.send({exist: true});
+      } else {
+        return res.send({exist: false});
+      }
+    });
+};
+
 exports.getCharacters = function (req, res) {
   Character
     .find()
@@ -8,6 +32,19 @@ exports.getCharacters = function (req, res) {
     .exec(function (err, characters) {
       return res.send(characters);
     });
+};
+
+exports.postCharacter = function (req, res) {
+  var obj = {
+    name: req.param('name'),
+    nickname: req.param('nickname') ? req.param('nickname').split(',') : [],
+    source_id: req.param('sourceId')
+  };
+
+  var character = new Character(obj);
+  character.save(function (err, character) {
+    return res.send(character);
+  });
 };
 
 exports.getCharacterById = function (req, res) {
