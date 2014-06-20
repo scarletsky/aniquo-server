@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "~3.8.0",
     "mongoose": "^3.8.11",
-    "bcrypt": "^0.7.8"
+    "bcrypt": "^0.7.8",
+    "async": "^0.9.0"
   }
 }
