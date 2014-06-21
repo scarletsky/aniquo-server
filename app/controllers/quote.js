@@ -10,6 +10,19 @@ exports.getQuotes = function (req, res) {
     });
 };
 
+exports.postQuote = function (req, res) {
+  var obj = {
+    character_id: req.param('characterId'),
+    quote: req.param('quote'),
+    reference: req.param('reference')
+  };
+
+  var quote = new Quote(obj);
+  quote.save(function (err, quote) {
+    return res.send(quote);
+  });
+};
+
 exports.getQuoteByKeyword = function (req, res) {
   var keyword = req.query.kw;
 

@@ -27,6 +27,7 @@ module.exports = function (app) {
 
   // quotes
   app.get(apiPrefix + '/quotes', quote.getQuotes);
+  app.post(apiPrefix + '/quotes', quote.postQuote);
   app.get(apiPrefix + '/quotes/:quoteId', quote.getQuoteById);
 
   // search
