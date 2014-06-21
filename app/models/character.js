@@ -7,8 +7,9 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var CharacterSchema = new Schema({
-  name: {type: String, unique: true},
+  name: {type: String},
   nickname: {type: Array},
+  info: {type: String, default: ''},
   source_id: {type: ObjectId},
   quote_count: {type: Number, default: 0},
   create_time: {type: Date, default: Date.now},

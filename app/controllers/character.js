@@ -38,6 +38,7 @@ exports.postCharacter = function (req, res) {
   var obj = {
     name: req.param('name'),
     nickname: req.param('nickname') ? req.param('nickname').split(',') : [],
+    info: req.param('info') || '',
     source_id: req.param('sourceId')
   };
 
