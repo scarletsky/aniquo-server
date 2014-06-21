@@ -16,6 +16,7 @@ module.exports = function (app) {
   app.get(apiPrefix + '/sources', source.getSources);
   app.post(apiPrefix + '/sources', source.postSource);
   app.get(apiPrefix + '/sources/:sourceId', source.getSourceById);
+  app.put(apiPrefix + '/sources/:sourceId', source.putSourceById);
   app.get(apiPrefix + '/sources/:sourceId/characters', character.getCharactersBySourceId);
 
   // characters

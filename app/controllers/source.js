@@ -53,6 +53,20 @@ exports.getSourceById = function (req, res) {
     });
 };
 
+exports.putSourceById = function (req, res) {
+  var sourceId = req.params.sourceId;
+  var obj = {
+    name: req.param('name'),
+    alias: req.param('alias'),
+    info: req.param('info')
+  };
+
+  Source
+    .findByIdAndUpdate(sourceId, obj, function (err, source) {
+      return res.send(source);
+    });
+};
+
 exports.getSourcesByKeyword = function (req, res) {
   var keyword = req.query.kw;
   var regexpKeyword = new RegExp('.*' + keyword + '.*');
