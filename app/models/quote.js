@@ -10,7 +10,6 @@ var QuoteSchema = new Schema({
   character_id: {type: ObjectId},
   quote: {type: String},
   like_count: {type: Number, default: 0},
-  source_id: {type: ObjectId},
   reference: {type: String},
   contributor_id: {type: ObjectId},
   create_time: {type: Date, default: Date.now},
