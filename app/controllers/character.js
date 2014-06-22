@@ -57,6 +57,21 @@ exports.getCharacterById = function (req, res) {
     });
 };
 
+exports.putCharacterById = function (req, res) {
+  var characterId = req.params.characterId;
+  var obj = {
+    name: req.param('name'),
+    nickname: req.param('nickname') || [],
+    info: req.param('info'),
+    source_id: req.param('sourceId')
+  };
+
+  Character
+    .findByIdAndUpdate(characterId, obj, function (err, character) {
+      return res.send(character);
+    });
+};
+
 exports.getCharactersByKeyword = function (req, res) {
   var keyword = req.query.kw;
   var regexpKeyword = new RegExp('.*' + keyword + '.*');
