@@ -43,6 +43,20 @@ exports.getQuoteById = function (req, res) {
     });
 };
 
+exports.putQuoteById = function (req, res) {
+  var quoteId =req.params.quoteId;
+  var obj = {
+    character_id: req.param('characterId'),
+    quote: req.param('quote'),
+    reference: req.param('reference')
+  };
+
+  Quote
+    .findByIdAndUpdate(quoteId, obj, function (err, quote) {
+      return res.send(quote);
+    });
+};
+
 exports.getQuotesByCharacterId = function (req, res) {
   var characterId = req.params.characterId;
   var paginationId = req.query.paginationId;

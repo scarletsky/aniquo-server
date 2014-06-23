@@ -31,6 +31,7 @@ module.exports = function (app) {
   app.get(apiPrefix + '/quotes', quote.getQuotes);
   app.post(apiPrefix + '/quotes', quote.postQuote);
   app.get(apiPrefix + '/quotes/:quoteId', quote.getQuoteById);
+  app.put(apiPrefix + '/quotes/:quoteId', quote.putQuoteById);
 
   // search
   app.get(apiPrefix + '/search', search.search);
