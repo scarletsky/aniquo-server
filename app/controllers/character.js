@@ -1,5 +1,7 @@
 var Character = require('../models').Character;
+var Source = require('../models').Source;
 var utils = require('./utils');
+var async = require('async');
 
 exports.checkCharacter = function (req, res) {
   var name = req.query.name;
@@ -51,10 +53,35 @@ exports.postCharacter = function (req, res) {
 exports.getCharacterById = function (req, res) {
   var characterId = req.params.characterId;
 
-  Character
-    .findById(characterId, function (err, character) {
+  if (req.query.with_source) {
+    async.waterfall([
+      function (callback) {
+        Character
+          .findById(characterId)
+          .lean()
+          .exec(function (err, character) {
+            callback(null, character);
+          });
+      },
+      function (character, callback) {
+        Source
+          .findById(character.source_id)
+          .lean()
+          .exec(function (err, source) {
+            callback(null, character, source);
+          });
+      }
+    ], function (err, character, source) {
+      delete character.source_id;
+      character.source = source;
       return res.send(character);
     });
+  } else {
+    Character
+      .findById(characterId, function (err, character) {
+        return res.send(character);
+      });
+  }
 };
 
 exports.putCharacterById = function (req, res) {

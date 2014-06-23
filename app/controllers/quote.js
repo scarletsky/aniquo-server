@@ -1,5 +1,7 @@
 var Quote = require('../models').Quote;
+var Character = require('../models').Character;
 var utils = require('./utils');
+var async = require('async');
 
 exports.getQuotes = function (req, res) {
   Quote
@@ -37,10 +39,35 @@ exports.getQuoteByKeyword = function (req, res) {
 exports.getQuoteById = function (req, res) {
   var quoteId = req.params.quoteId;
 
-  Quote
-    .findById(quoteId, function (err, quote) {
-      return res.send(quote);
+  if (req.query.with_character) {
+    async.waterfall([
+      function (callback) {
+        Quote
+          .findById(quoteId)
+          .lean()
+          .exec(function (err, quote) {
+            callback(null, quote);
+          });
+      },
+      function (quote, callback) {
+        Character
+          .findById(quote.character_id)
+          .lean()
+          .exec(function (err, character) {
+            callback(null, quote, character);
+          });
+      }
+    ], function (err, quote, character) {
+      delete quote.character_id;
+      quote.character = character;
+      return res.send(quote)
     });
+  } else {
+    Quote
+      .findById(quoteId, function (err, quote) {
+        return res.send(quote);
+      });
+  }
 };
 
 exports.putQuoteById = function (req, res) {
