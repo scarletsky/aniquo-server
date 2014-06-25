@@ -3,9 +3,14 @@ var source = require('../app/controllers/source');
 var character = require('../app/controllers/character');
 var quote = require('../app/controllers/quote');
 var search = require('../app/controllers/search');
+var auth = require('../app/controllers/auth');
+var expressJwt = require('express-jwt');
+
 
 module.exports = function (app) {
   var apiPrefix = '/api';
+  // auth
+  app.post(apiPrefix + '/authenticate', auth.authenticate);
 
   // users
   app.get(apiPrefix + '/users', user.getUsers);
@@ -22,7 +27,7 @@ module.exports = function (app) {
   // characters
   app.get(apiPrefix + '/character/check', character.checkCharacter);
   app.get(apiPrefix + '/characters', character.getCharacters);
-  app.post(apiPrefix + '/characters', character.postCharacter)
+  app.post(apiPrefix + '/characters', character.postCharacter);
   app.get(apiPrefix + '/characters/:characterId', character.getCharacterById);
   app.put(apiPrefix + '/characters/:characterId', character.putCharacterById);
   app.get(apiPrefix + '/characters/:characterId/quotes', quote.getQuotesByCharacterId);
