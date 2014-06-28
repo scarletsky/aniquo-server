@@ -13,16 +13,19 @@ exports.authenticate = function (req, res) {
     })
     .exec(function (err, user) {
       if (!user) {
-        return res.send({error: '用户不存在'});
+        return res.send(403, {error: '用户不存在'});
       }
 
       if (user.auth(password)) {
         var token = jwt.sign(user, config.sessionSecret, {
           expiresInMinutes: 60*5
         });
-        return res.send({token: token});
+        return res.send(200, {
+          user: user,
+          token: token
+        });
       } else {
-        return res.send({error: '用户名或密码错误'});
+        return res.send(403, {error: '用户名或密码错误'});
       }
     });
 };
@@ -37,20 +40,21 @@ exports.register = function (req, res) {
     })
     .exec(function (err, user) {
       if (user) {
-        return res.send({error: '该用户已存在'});
+        return res.send(403, {error: '该用户已存在'});
       }
 
       user = new User({
         name: username,
         password: password
       });
+
       user.save(function (err, user) {
         user = user.toObject();
         var token = jwt.sign(user, config.sessionSecret, {
           expiresInMinutes: 60*5
         });
 
-        return res.send({
+        return res.send(200, {
           user: user,
           token: token
         });
