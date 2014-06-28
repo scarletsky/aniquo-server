@@ -11,6 +11,7 @@ module.exports = function (app) {
   var apiPrefix = '/api';
   // auth
   app.post(apiPrefix + '/authenticate', auth.authenticate);
+  app.post(apiPrefix + '/register', auth.register);
 
   // users
   app.get(apiPrefix + '/users', user.getUsers);

@@ -26,3 +26,34 @@ exports.authenticate = function (req, res) {
       }
     });
 };
+
+exports.register = function (req, res) {
+  var username = req.param('username');
+  var password = req.param('password');
+
+  User
+    .findOne({
+      name: username
+    })
+    .exec(function (err, user) {
+      if (user) {
+        return res.send({error: '该用户已存在'});
+      }
+
+      user = new User({
+        name: username,
+        password: password
+      });
+      user.save(function (err, user) {
+        user = user.toObject();
+        var token = jwt.sign(user, config.sessionSecret, {
+          expiresInMinutes: 60*5
+        });
+
+        return res.send({
+          user: user,
+          token: token
+        });
+      });
+    });
+};
