@@ -9,7 +9,7 @@ exports.authenticate = function (req, res) {
 
   User
     .findOne({
-      name: username
+      username: username
     })
     .exec(function (err, user) {
       if (!user) {
@@ -36,7 +36,7 @@ exports.register = function (req, res) {
 
   User
     .findOne({
-      name: username
+      username: username
     })
     .exec(function (err, user) {
       if (user) {
@@ -44,7 +44,7 @@ exports.register = function (req, res) {
       }
 
       user = new User({
-        name: username,
+        username: username,
         password: password
       });
 

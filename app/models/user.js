@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-  name: {type: String, default: ''},
+  username: {type: String, default: ''},
   passwordHash: {type: String, default: ''},
   contributeCount: {type: Number, default: 0},
   createdAt: {type: Date, default: Date.now}
@@ -27,6 +27,6 @@ UserSchema.methods = {
   }
 };
 
-UserSchema.index({name: 1});
+UserSchema.index({username: 1});
 
 mongoose.model('User', UserSchema);

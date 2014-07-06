@@ -28,7 +28,7 @@ exports.getUsersByKeyword = function (req, res) {
 
   User
     .find({
-      name: regexpKeyword
+      username: regexpKeyword
     })
     .exec(function (err, users) {
       return res.send(users);
