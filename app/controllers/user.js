@@ -1,5 +1,9 @@
 var User = require('../models').User;
 
+exports.getUserByToken = function (req, res) {
+  return res.send(req.user);
+};
+
 exports.getUsers = function (req, res) {
   User
     .find()
