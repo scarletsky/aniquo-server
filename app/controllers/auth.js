@@ -17,9 +17,12 @@ exports.authenticate = function (req, res) {
       }
 
       if (user.auth(password)) {
+        user = user.toObject();
+        delete user.passwordHash;
         var token = jwt.sign(user, config.sessionSecret, {
           expiresInMinutes: 60*5
         });
+
         return res.send(200, {
           user: user,
           token: token
@@ -50,6 +53,7 @@ exports.register = function (req, res) {
 
       user.save(function (err, user) {
         user = user.toObject();
+        delete user.passwordHash;
         var token = jwt.sign(user, config.sessionSecret, {
           expiresInMinutes: 60*5
         });
