@@ -5,7 +5,7 @@ var async = require('async');
 
 exports.checkCharacter = function (req, res) {
   var name = req.query.name;
-  var nickname = req.query.nickname ? req.query.nickname.split(',') : [];
+  var alias = req.query.alias ? req.query.alias.split(',') : [];
   var sourceId = req.query.sourceId;
 
   Character
@@ -13,8 +13,8 @@ exports.checkCharacter = function (req, res) {
       sourceId: sourceId,
       $or: [
         {name: name},
-        {nickname: {
-          $in: nickname
+        {alias: {
+          $in: alias
         }}
       ]
     })
@@ -39,7 +39,7 @@ exports.getCharacters = function (req, res) {
 exports.postCharacter = function (req, res) {
   var obj = {
     name: req.param('name'),
-    nickname: req.param('nickname') ? req.param('nickname').split(',') : [],
+    alias: req.param('alias') ? req.param('alias').split(',') : [],
     info: req.param('info') || '',
     sourceId: req.param('sourceId')
   };
@@ -88,7 +88,7 @@ exports.putCharacterById = function (req, res) {
   var characterId = req.params.characterId;
   var obj = {
     name: req.param('name'),
-    nickname: req.param('nickname') || [],
+    alias: req.param('alias') || [],
     info: req.param('info'),
     sourceId: req.param('sourceId')
   };
@@ -107,7 +107,7 @@ exports.getCharactersByKeyword = function (req, res) {
     .find({
       $or: [
         {name: regexpKeyword},
-        {nickname: regexpKeyword}
+        {alias: regexpKeyword}
       ]
     })
     .exec(function (err, characters) {
