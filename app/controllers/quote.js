@@ -14,7 +14,7 @@ exports.getQuotes = function (req, res) {
 
 exports.postQuote = function (req, res) {
   var obj = {
-    character_id: req.param('characterId'),
+    characterId: req.param('characterId'),
     quote: req.param('quote'),
     reference: req.param('reference')
   };
@@ -51,14 +51,14 @@ exports.getQuoteById = function (req, res) {
       },
       function (quote, callback) {
         Character
-          .findById(quote.character_id)
+          .findById(quote.characterId)
           .lean()
           .exec(function (err, character) {
             callback(null, quote, character);
           });
       }
     ], function (err, quote, character) {
-      delete quote.character_id;
+      delete quote.characterId;
       quote.character = character;
       return res.send(quote)
     });
@@ -73,7 +73,7 @@ exports.getQuoteById = function (req, res) {
 exports.putQuoteById = function (req, res) {
   var quoteId =req.params.quoteId;
   var obj = {
-    character_id: req.param('characterId'),
+    characterId: req.param('characterId'),
     quote: req.param('quote'),
     reference: req.param('reference')
   };
@@ -90,22 +90,22 @@ exports.getQuotesByCharacterId = function (req, res) {
 
   var options = {
     targetCriteria: {
-      character_id: characterId
+      characterId: characterId
     },
     nextPageCriteria: {
-      character_id: characterId,
+      characterId: characterId,
       _id: {
         $gt: paginationId
       }
     },
     prevPageCriteria: {
-      character_id: characterId,
+      characterId: characterId,
       _id: {
         $lt: paginationId
       }
     },
     otherPageCriteria: {
-      character_id: characterId,
+      characterId: characterId,
       _id: {
         $gte: paginationId
       }

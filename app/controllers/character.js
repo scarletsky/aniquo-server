@@ -10,7 +10,7 @@ exports.checkCharacter = function (req, res) {
 
   Character
     .findOne({
-      source_id: sourceId,
+      sourceId: sourceId,
       $or: [
         {name: name},
         {nickname: {
@@ -41,7 +41,7 @@ exports.postCharacter = function (req, res) {
     name: req.param('name'),
     nickname: req.param('nickname') ? req.param('nickname').split(',') : [],
     info: req.param('info') || '',
-    source_id: req.param('sourceId')
+    sourceId: req.param('sourceId')
   };
 
   var character = new Character(obj);
@@ -65,14 +65,14 @@ exports.getCharacterById = function (req, res) {
       },
       function (character, callback) {
         Source
-          .findById(character.source_id)
+          .findById(character.sourceId)
           .lean()
           .exec(function (err, source) {
             callback(null, character, source);
           });
       }
     ], function (err, character, source) {
-      delete character.source_id;
+      delete character.sourceId;
       character.source = source;
       return res.send(character);
     });
@@ -90,7 +90,7 @@ exports.putCharacterById = function (req, res) {
     name: req.param('name'),
     nickname: req.param('nickname') || [],
     info: req.param('info'),
-    source_id: req.param('sourceId')
+    sourceId: req.param('sourceId')
   };
 
   Character
@@ -121,22 +121,22 @@ exports.getCharactersBySourceId = function (req, res) {
 
   var options = {
     targetCriteria: {
-      source_id: sourceId 
+      sourceId: sourceId 
     },
     nextPageCriteria: {
-      source_id: sourceId,
+      sourceId: sourceId,
       _id: {
         $gt: paginationId
       }
     },
     prevPageCriteria: {
-      source_id: sourceId,
+      sourceId: sourceId,
       _id: {
         $lt: paginationId
       }
     },
     otherPageCriteria: {
-      source_id: sourceId,
+      sourceId: sourceId,
       _id: {
         $gte: paginationId
       }

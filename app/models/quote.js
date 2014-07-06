@@ -7,15 +7,14 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var QuoteSchema = new Schema({
-  character_id: {type: ObjectId},
+  characterId: {type: ObjectId},
   quote: {type: String},
-  like_count: {type: Number, default: 0},
+  likeCount: {type: Number, default: 0},
   reference: {type: String},
-  contributor_id: {type: ObjectId},
-  create_time: {type: Date, default: Date.now},
-  is_pass: {type: Boolean, default: false}
+  contributorId: {type: ObjectId},
+  createdAt: {type: Date, default: Date.now},
 });
 
-QuoteSchema.index({create_time: -1});
+QuoteSchema.index({createdAt: -1});
 
 mongoose.model('Quote', QuoteSchema);

@@ -10,13 +10,13 @@ var CharacterSchema = new Schema({
   name: {type: String},
   nickname: {type: Array},
   info: {type: String, default: ''},
-  source_id: {type: ObjectId},
-  quote_count: {type: Number, default: 0},
-  create_time: {type: Date, default: Date.now},
-  is_pass: {type: Boolean, default: false}
+  sourceId: {type: ObjectId},
+  quotesCount: {type: Number, default: 0},
+  contributorId: {type: ObjectId},
+  createdAt: {type: Date, default: Date.now}
 });
 
-CharacterSchema.index({create_time: -1});
+CharacterSchema.index({createdAt: -1});
 CharacterSchema.index({name: 1, nickname: 1});
 
 mongoose.model('Character', CharacterSchema);
