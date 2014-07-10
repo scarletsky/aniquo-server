@@ -2,7 +2,11 @@ var Source = require('../models').Source;
 
 exports.checkSource = function (req, res) {
   var name = req.query.name;
-  var alias = req.query.alias ? req.query.alias.split(',') : [''];
+  var alias = req.query.alias || [''];
+
+  if (typeof alias === 'string') {
+    alias = Array(alias);
+  }
 
   Source
     .findOne({
