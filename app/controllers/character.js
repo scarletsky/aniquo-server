@@ -5,8 +5,12 @@ var async = require('async');
 
 exports.checkCharacter = function (req, res) {
   var name = req.query.name;
-  var alias = req.query.alias ? req.query.alias.split(',') : [];
+  var alias = req.query.alias || [''];
   var sourceId = req.query.sourceId;
+
+  if (typeof alias === 'string') {
+    alias = Array(alias);
+  }
 
   Character
     .findOne({
@@ -39,8 +43,8 @@ exports.getCharacters = function (req, res) {
 exports.postCharacter = function (req, res) {
   var obj = {
     name: req.param('name'),
-    alias: req.param('alias') ? req.param('alias').split(',') : [],
-    info: req.param('info') || '',
+    alias: req.param('alias'),
+    info: req.param('info'),
     sourceId: req.param('sourceId')
   };
 
