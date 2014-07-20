@@ -9,8 +9,12 @@ var Schema = mongoose.Schema;
 var UserSchema = new Schema({
   username: {type: String, default: ''},
   passwordHash: {type: String, default: ''},
+  nickname: {type: String, default: ''},
+  avatar: {type: String, default: ''},
+  site: {type: String, default: ''},
+  info: {type: String, default: ''},
   contributeCount: {type: Number, default: 0},
-  createdAt: {type: Date, default: Date.now}
+  createdAt: {type: Date, default: Date.now},
 });
 
 UserSchema
