@@ -19,6 +19,7 @@ module.exports = function (app, config) {
 
   // users
   app.get(apiPrefix + '/user', expressJwt(jwtOptions), user.getUserByToken);
+  app.put(apiPrefix + '/user', expressJwt(jwtOptions), user.putUser)
   app.get(apiPrefix + '/users', user.getUsers);
   app.get(apiPrefix + '/users/:userId', user.getUserById);
 
