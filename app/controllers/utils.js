@@ -66,5 +66,4 @@ exports.paging = function (req, res, Class, options) {
             });
         }
     });
-
 }
