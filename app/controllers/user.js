@@ -47,7 +47,7 @@ exports.putUser = function (req, res) {
 
   if (!isChangePassword) {
     var data = {};
-    var fields = ['nickname', 'site', 'info'];
+    var fields = ['nickname', 'site', 'info', 'avatar'];
 
     for (var i = 0; i < fields.length; i++) {
       var field = fields[i];

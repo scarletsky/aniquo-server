@@ -4,8 +4,8 @@ var character = require('../app/controllers/character');
 var quote = require('../app/controllers/quote');
 var search = require('../app/controllers/search');
 var auth = require('../app/controllers/auth');
+var upload = require('../app/controllers/upload');
 var expressJwt = require('express-jwt');
-
 
 module.exports = function (app, config) {
   var apiPrefix = '/api';
@@ -47,4 +47,8 @@ module.exports = function (app, config) {
 
   // search
   app.get(apiPrefix + '/search', search.search);
+
+  // upload
+  app.get(apiPrefix + '/upload/token', expressJwt(jwtOptions), upload.getUploadToken);
 };
+
