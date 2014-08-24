@@ -6,6 +6,7 @@ var search = require('../app/controllers/search');
 var auth = require('../app/controllers/auth');
 var upload = require('../app/controllers/upload');
 var expressJwt = require('express-jwt');
+var access = require('./middlewares/access');
 
 module.exports = function (app, config) {
   var apiPrefix = '/api';
@@ -14,8 +15,8 @@ module.exports = function (app, config) {
   };
 
   // auth
-  app.post(apiPrefix + '/authenticate', auth.authenticate);
-  app.post(apiPrefix + '/register', auth.register);
+  app.post(apiPrefix + '/authenticate', access.allowAccess, auth.authenticate);
+  app.post(apiPrefix + '/register', access.allowAccess, auth.register);
 
   // users
   app.get(apiPrefix + '/user', expressJwt(jwtOptions), user.getUserByToken);
@@ -26,24 +27,24 @@ module.exports = function (app, config) {
   // sources
   app.get(apiPrefix + '/source/check', source.checkSource);
   app.get(apiPrefix + '/sources', source.getSources);
-  app.post(apiPrefix + '/sources', expressJwt(jwtOptions), source.postSource);
+  app.post(apiPrefix + '/sources', access.allowAccess, expressJwt(jwtOptions), source.postSource);
   app.get(apiPrefix + '/sources/:sourceId', source.getSourceById);
-  app.put(apiPrefix + '/sources/:sourceId', expressJwt(jwtOptions), source.putSourceById);
+  app.put(apiPrefix + '/sources/:sourceId', access.allowAccess, expressJwt(jwtOptions), source.putSourceById);
   app.get(apiPrefix + '/sources/:sourceId/characters', character.getCharactersBySourceId);
 
   // characters
   app.get(apiPrefix + '/character/check', character.checkCharacter);
   app.get(apiPrefix + '/characters', character.getCharacters);
-  app.post(apiPrefix + '/characters', expressJwt(jwtOptions), character.postCharacter);
+  app.post(apiPrefix + '/characters', access.allowAccess, expressJwt(jwtOptions), character.postCharacter);
   app.get(apiPrefix + '/characters/:characterId', character.getCharacterById);
-  app.put(apiPrefix + '/characters/:characterId', expressJwt(jwtOptions), character.putCharacterById);
+  app.put(apiPrefix + '/characters/:characterId', access.allowAccess, expressJwt(jwtOptions), character.putCharacterById);
   app.get(apiPrefix + '/characters/:characterId/quotes', quote.getQuotesByCharacterId);
 
   // quotes
   app.get(apiPrefix + '/quotes', quote.getQuotes);
-  app.post(apiPrefix + '/quotes', expressJwt(jwtOptions), quote.postQuote);
+  app.post(apiPrefix + '/quotes', access.allowAccess, expressJwt(jwtOptions), quote.postQuote);
   app.get(apiPrefix + '/quotes/:quoteId', quote.getQuoteById);
-  app.put(apiPrefix + '/quotes/:quoteId', expressJwt(jwtOptions), quote.putQuoteById);
+  app.put(apiPrefix + '/quotes/:quoteId', access.allowAccess, expressJwt(jwtOptions), quote.putQuoteById);
   app.get(apiPrefix + '/users/:userId/contribution/quotes', expressJwt(jwtOptions), quote.getQuotesByUserId);
 
   // search
