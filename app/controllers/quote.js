@@ -46,7 +46,11 @@ exports.getQuoteById = function (req, res) {
     async.waterfall([
       function (callback) {
         Quote
-          .findById(quoteId)
+          .findByIdAndUpdate(quoteId, {
+            $inc: {
+              viewCount: 1
+            }
+          })
           .lean()
           .exec(function (err, quote) {
             callback(null, quote);
@@ -91,7 +95,7 @@ exports.getQuoteById = function (req, res) {
     });
   } else {
     Quote
-      .findById(quoteId, function (err, quote) {
+      .findByIdAndUpdate(quoteId, {$inc: {viewCount: 1}}, function (err, quote) {
         return res.send(quote);
       });
   }
