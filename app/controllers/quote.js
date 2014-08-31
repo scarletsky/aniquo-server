@@ -1,5 +1,6 @@
 var Quote = require('../models').Quote;
 var Character = require('../models').Character;
+var User = require('../models').User;
 var utils = require('./utils');
 var async = require('async');
 
@@ -38,8 +39,10 @@ exports.getQuoteByKeyword = function (req, res) {
 
 exports.getQuoteById = function (req, res) {
   var quoteId = req.params.quoteId;
+  var withCharacter = req.query.with_character;
+  var withContributor = req.query.with_contributor; 
 
-  if (req.query.with_character) {
+  if (withCharacter || withContributor) {
     async.waterfall([
       function (callback) {
         Quote
@@ -50,17 +53,41 @@ exports.getQuoteById = function (req, res) {
           });
       },
       function (quote, callback) {
-        Character
-          .findById(quote.characterId)
-          .lean()
-          .exec(function (err, character) {
-            callback(null, quote, character);
-          });
+        if (withCharacter) {
+          Character
+            .findById(quote.characterId)
+            .lean()
+            .exec(function (err, character) {
+              callback(null, quote, character);
+            });
+        } else {
+          callback(null, quote, null);
+        }
+      },
+      function (quote, character, callback) {
+        if (withContributor) {
+          User
+            .findById(quote.contributorId)
+            .lean()
+            .exec(function (err, contributor) {
+              callback(null, quote, character, contributor);
+            });
+        } else {
+          callback(null, quote, character, null);
+        }
       }
-    ], function (err, quote, character) {
-      delete quote.characterId;
-      quote.character = character;
-      return res.send(quote)
+    ], function (err, quote, character, contributor) {
+      if (character) {
+        delete quote.characterId;
+        quote.character = character;
+      }
+
+      if (contributor) {
+        delete quote.contributorId;
+        quote.contributor = contributor;
+      }
+
+      return res.send(quote);
     });
   } else {
     Quote
@@ -144,4 +171,4 @@ exports.getQuotesByUserId = function (req, res) {
   };
 
   return utils.paging(req, res, Quote, options);
-}
+};
