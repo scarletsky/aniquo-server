@@ -190,3 +190,34 @@ exports.getCharactersBySourceId = function (req, res) {
 
   return utils.paging(req, res, Character, options);
 };
+
+exports.getCharactersByUserId = function (req, res) {
+  var userId = req.user._id;
+  var paginationId = req.query.paginationId;
+
+  var options = {
+    targetCriteria: {
+      contributorId: userId
+    },
+    nextPageCriteria: {
+      contributorId: userId,
+      _id: {
+        $gt: paginationId
+      }
+    },
+    prevPageCriteria: {
+      contributorId: userId,
+      _id: {
+        $lt: paginationId
+      }
+    },
+    otherPageCriteria: {
+      contributorId: userId,
+      _id: {
+        $gte: paginationId
+      }
+    }
+  };
+
+  return utils.paging(req, res, Character, options);
+};
