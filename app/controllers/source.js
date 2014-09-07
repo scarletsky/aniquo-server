@@ -1,4 +1,5 @@
 var Source = require('../models').Source;
+var utils = require('./utils');
 
 exports.checkSource = function (req, res) {
   var name = req.query.name;
@@ -86,3 +87,34 @@ exports.getSourcesByKeyword = function (req, res) {
       return res.send(sources);
     });
 };
+
+exports.getSourcesByUserId = function (req, res) {
+  var userId = req.user._id;
+  var paginationId = req.query.paginationId;
+
+  var options = {
+    targetCriteria: {
+      contributorId: userId
+    },
+    nextPageCriteria: {
+      contributorId: userId,
+      _id: {
+        $gt: paginationId
+      }
+    },
+    prevPageCriteria: {
+      contributorId: userId,
+      _id: {
+        $lt: paginationId
+      }
+    },
+    otherPageCriteria: {
+      contributorId: userId,
+      _id: {
+        $gte: paginationId
+      }
+    }
+  };
+
+  return utils.paging(req, res, Source, options);
+}
