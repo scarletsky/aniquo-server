@@ -14,7 +14,6 @@ var SourceSchema = new Schema({
   createdAt: {type: Date, default: Date.now}
 });
 
-SourceSchema.index({createdAt: -1});
 SourceSchema.index({name: 1, alias: 1});
 
 mongoose.model('Source', SourceSchema);

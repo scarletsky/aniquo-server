@@ -16,7 +16,6 @@ var CharacterSchema = new Schema({
   createdAt: {type: Date, default: Date.now}
 });
 
-CharacterSchema.index({createdAt: -1});
 CharacterSchema.index({name: 1, alias: 1});
 
 mongoose.model('Character', CharacterSchema);

@@ -31,6 +31,7 @@ module.exports = function (app, config) {
   app.get(apiPrefix + '/sources/:sourceId', source.getSourceById);
   app.put(apiPrefix + '/sources/:sourceId', access.allowAccess, expressJwt(jwtOptions), source.putSourceById);
   app.get(apiPrefix + '/sources/:sourceId/characters', character.getCharactersBySourceId);
+  app.get(apiPrefix + '/users/:userId/contribution/sources', expressJwt(jwtOptions), source.getSourcesByUserId);
 
   // characters
   app.get(apiPrefix + '/character/check', character.checkCharacter);
