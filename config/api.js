@@ -40,6 +40,7 @@ module.exports = function (app, config) {
   app.get(apiPrefix + '/characters/:characterId', character.getCharacterById);
   app.put(apiPrefix + '/characters/:characterId', access.allowAccess, expressJwt(jwtOptions), character.putCharacterById);
   app.get(apiPrefix + '/characters/:characterId/quotes', quote.getQuotesByCharacterId);
+  app.get(apiPrefix + '/users/:userId/contribution/characters', expressJwt(jwtOptions), character.getCharactersByUserId);
 
   // quotes
   app.get(apiPrefix + '/quotes', quote.getQuotes);
