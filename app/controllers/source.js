@@ -1,5 +1,6 @@
 var Source = require('../models').Source;
 var utils = require('./utils');
+var async = require('async');
 
 exports.checkSource = function (req, res) {
   var name = req.query.name;
@@ -76,16 +77,25 @@ exports.getSourcesByKeyword = function (req, res) {
   var keyword = req.query.kw;
   var regexpKeyword = new RegExp('.*' + keyword + '.*');
 
-  Source
-    .find({
-      $or: [
-        {name: regexpKeyword},
-        {alias: regexpKeyword}
-      ]
-    })
-    .exec(function (err, sources) {
-      return res.send(sources);
-    });
+  Source.search({
+    query: keyword
+  }, function (err, _results) {
+    var output = [];
+    var results = _results.hits.hits;
+
+    if (results.length > 0) {
+      async.eachSeries(results, function (result, callback) {
+        Source.findById(result._id, function (err, source) {
+          output.push(source);
+          callback();
+        });
+      }, function (err) {
+        console.log('finished');
+        return res.send(output);
+      });
+    }
+
+  });
 };
 
 exports.getSourcesByUserId = function (req, res) {
@@ -117,4 +127,4 @@ exports.getSourcesByUserId = function (req, res) {
   };
 
   return utils.paging(req, res, Source, options);
-}
+};
