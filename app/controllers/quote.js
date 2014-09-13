@@ -176,3 +176,24 @@ exports.getQuotesByUserId = function (req, res) {
 
   return utils.paging(req, res, Quote, options);
 };
+
+exports.putQuoteLikerIdById = function (req, res) {
+  var userId = req.user._id;
+  var quoteId = req.params.quoteId;
+
+  Quote
+    .findById(quoteId)
+    .exec(function (err, quote) {
+
+      if (quote.likerIds.indexOf(userId) === -1) {
+        quote.likerIds.unshift(userId);
+        quote.likeCount++;
+        quote.save(function (err, quote) {
+          return res.send(quote);
+        });
+      } else {
+        return res.send(quote);
+      }
+
+    });
+};

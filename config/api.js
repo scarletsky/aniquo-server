@@ -48,6 +48,7 @@ module.exports = function (app, config) {
   app.get(apiPrefix + '/quotes/:quoteId', quote.getQuoteById);
   app.put(apiPrefix + '/quotes/:quoteId', access.allowAccess, expressJwt(jwtOptions), quote.putQuoteById);
   app.get(apiPrefix + '/users/:userId/contribution/quotes', expressJwt(jwtOptions), quote.getQuotesByUserId);
+  app.put(apiPrefix + '/user/like/quotes/:quoteId', expressJwt(jwtOptions), quote.putQuoteLikerIdById);
 
   // search
   app.get(apiPrefix + '/search', search.search);
