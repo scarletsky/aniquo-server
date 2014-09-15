@@ -21,4 +21,4 @@ exports.allowAccess = function (req, res, next) {
   } else {
     next();
   }
-}
+};

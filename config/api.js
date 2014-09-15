@@ -6,6 +6,7 @@ var search = require('../app/controllers/search');
 var auth = require('../app/controllers/auth');
 var upload = require('../app/controllers/upload');
 var expressJwt = require('express-jwt');
+var customJwt = require('./middlewares/customJwt');
 var access = require('./middlewares/access');
 
 module.exports = function (app, config) {
@@ -45,7 +46,7 @@ module.exports = function (app, config) {
   // quotes
   app.get(apiPrefix + '/quotes', quote.getQuotes);
   app.post(apiPrefix + '/quotes', access.allowAccess, expressJwt(jwtOptions), quote.postQuote);
-  app.get(apiPrefix + '/quotes/:quoteId', quote.getQuoteById);
+  app.get(apiPrefix + '/quotes/:quoteId', customJwt(jwtOptions), quote.getQuoteById);
   app.put(apiPrefix + '/quotes/:quoteId', access.allowAccess, expressJwt(jwtOptions), quote.putQuoteById);
   app.get(apiPrefix + '/users/:userId/contribution/quotes', expressJwt(jwtOptions), quote.getQuotesByUserId);
   app.put(apiPrefix + '/user/like/quotes/:quoteId', expressJwt(jwtOptions), quote.putQuoteLikerIdById);

@@ -38,6 +38,7 @@ exports.getQuoteByKeyword = function (req, res) {
 };
 
 exports.getQuoteById = function (req, res) {
+  var userId = req.user ? req.user._id : undefined;
   var quoteId = req.params.quoteId;
   var withCharacter = req.query.with_character;
   var withContributor = req.query.with_contributor; 
@@ -91,11 +92,16 @@ exports.getQuoteById = function (req, res) {
         quote.contributor = contributor;
       }
 
+      quote = utils.setLikedField(quote, userId);
+
       return res.send(quote);
     });
   } else {
     Quote
       .findByIdAndUpdate(quoteId, {$inc: {viewCount: 1}}, function (err, quote) {
+
+        quote = utils.setLikedField(quote, userId);
+
         return res.send(quote);
       });
   }
@@ -189,9 +195,11 @@ exports.putQuoteLikerIdById = function (req, res) {
         quote.likerIds.unshift(userId);
         quote.likeCount++;
         quote.save(function (err, quote) {
+          quote = utils.setLikedField(quote, userId);
           return res.send(quote);
         });
       } else {
+        quote = utils.setLikedField(quote, userId);
         return res.send(quote);
       }
 
@@ -210,9 +218,11 @@ exports.deleteQuoteLikerIdById = function (req, res) {
         quote.likerIds.pull(userId);
         quote.likeCount--;
         quote.save(function (err, quote) {
+          quote = utils.setLikedField(quote, userId);
           return res.send(quote);
         });
       } else {
+        quote = utils.setLikedField(quote, userId);
         return res.send(quote);
       }
 
