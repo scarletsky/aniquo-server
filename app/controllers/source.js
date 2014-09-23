@@ -2,6 +2,10 @@ var Source = require('../models').Source;
 var utils = require('./utils');
 var async = require('async');
 
+var env = process.env.NODE_ENV || 'development';
+var config = require('../../config/config')[env];
+var perPage = config.perPage;
+
 exports.checkSource = function (req, res) {
   var name = req.query.name;
   var alias = req.query.alias || [''];
@@ -75,13 +79,22 @@ exports.putSourceById = function (req, res) {
 
 exports.getSourcesByKeyword = function (req, res) {
   var keyword = req.query.kw;
-  var regexpKeyword = new RegExp('.*' + keyword + '.*');
+  var page = req.query.page || 1;
+  var size = req.query.perPage || perPage;
 
   Source.search({
-    query: keyword,
+    query: {
+      match: {
+        _all: keyword
+      }
+    },
     fields: [],
+    from: (page - 1) * size,
+    size: size,
+    min_score: 0.5
   }, function (err, _results) {
     var output = [];
+    var total = _results.hits.total;
     var results = _results.hits.hits;
 
     if (results.length > 0) {
@@ -93,8 +106,14 @@ exports.getSourcesByKeyword = function (req, res) {
           }
         })
         .exec(function (err, sources) {
-          return res.send(sources);
+          return res.send({
+            total: total,
+            perPage: perPage,
+            objects: sources
+          });
         });
+    } else {
+      return res.send([]);
     }
 
   });
