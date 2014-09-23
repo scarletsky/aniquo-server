@@ -78,21 +78,23 @@ exports.getSourcesByKeyword = function (req, res) {
   var regexpKeyword = new RegExp('.*' + keyword + '.*');
 
   Source.search({
-    query: keyword
+    query: keyword,
+    fields: [],
   }, function (err, _results) {
     var output = [];
     var results = _results.hits.hits;
 
     if (results.length > 0) {
-      async.eachSeries(results, function (result, callback) {
-        Source.findById(result._id, function (err, source) {
-          output.push(source);
-          callback();
+      var ids = results.map(function (r) { return r._id; });
+      Source
+        .find({
+          _id: {
+            $in: ids
+          }
+        })
+        .exec(function (err, sources) {
+          return res.send(sources);
         });
-      }, function (err) {
-        console.log('finished');
-        return res.send(output);
-      });
     }
 
   });
