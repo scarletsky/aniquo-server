@@ -121,31 +121,42 @@ exports.getSourcesByKeyword = function (req, res) {
 
 exports.getSourcesByUserId = function (req, res) {
   var userId = req.user._id;
-  var paginationId = req.query.paginationId;
+  var page = req.query.page || 1;
+  var size = req.query.perPage || perPage;
 
-  var options = {
-    targetCriteria: {
-      contributorId: userId
-    },
-    nextPageCriteria: {
-      contributorId: userId,
-      _id: {
-        $gt: paginationId
+  Source.search({
+    query: {
+      term: {
+        contributorId: userId
       }
     },
-    prevPageCriteria: {
-      contributorId: userId,
-      _id: {
-        $lt: paginationId
-      }
-    },
-    otherPageCriteria: {
-      contributorId: userId,
-      _id: {
-        $gte: paginationId
-      }
+    fields: [],
+    from: (page - 1) * size,
+    size: size
+  }, function (err, _results) {
+    var output = [];
+    var total = _results.hits.total;
+    var results = _results.hits.hits;
+
+    if (results.length > 0) {
+      var ids = results.map(function (r) { return r._id; });
+      Source
+        .find({
+          _id: {
+            $in: ids
+          }
+        })
+        .exec(function (err, sources) {
+          return res.send({
+            total: total,
+            perPage: perPage,
+            objects: sources
+          });
+        });
+    } else {
+      return res.send([]);
     }
-  };
 
-  return utils.paging(req, res, Source, options);
+  });
+
 };

@@ -11,7 +11,7 @@ var SourceSchema = new Schema({
   name: {type: String, unique: true, es_indexed: true},
   alias: {type: Array, es_indexed: true},
   info: {type: String},
-  contributorId: {type: ObjectId},
+  contributorId: {type: ObjectId, es_indexed: true},
   createdAt: {type: Date, default: Date.now}
 });
 
