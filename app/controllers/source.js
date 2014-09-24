@@ -83,6 +83,13 @@ exports.getSourcesByKeyword = function (req, res) {
   var size = req.query.perPage || perPage;
 
   Source.search({
+    sort: [
+      {
+        createdAt: {
+          order: 'desc'
+        }
+      }
+    ],
     query: {
       match: {
         _all: keyword
@@ -105,6 +112,9 @@ exports.getSourcesByKeyword = function (req, res) {
             $in: ids
           }
         })
+        .sort({
+          createdAt: -1
+        })
         .exec(function (err, sources) {
           return res.send({
             total: total,
@@ -125,6 +135,13 @@ exports.getSourcesByUserId = function (req, res) {
   var size = req.query.perPage || perPage;
 
   Source.search({
+    sort: [
+      {
+        createdAt: {
+          order: 'desc'
+        }
+      }
+    ],
     query: {
       term: {
         contributorId: userId
@@ -145,6 +162,9 @@ exports.getSourcesByUserId = function (req, res) {
           _id: {
             $in: ids
           }
+        })
+        .sort({
+          createdAt: -1
         })
         .exec(function (err, sources) {
           return res.send({
