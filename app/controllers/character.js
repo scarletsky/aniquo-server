@@ -123,7 +123,8 @@ exports.getCharactersByKeyword = function (req, res) {
         quotesCount: {
           order: 'desc'
         }
-      }
+      },
+      '_score'
     ],
     query: {
       match: {
@@ -133,7 +134,7 @@ exports.getCharactersByKeyword = function (req, res) {
     fields: [],
     from: (page - 1) * size,
     size: size,
-    min_score: 0.5
+    min_score: 0.4
   }, function (err, _results) {
     var output = [];
     var total = _results.hits.total;
@@ -188,10 +189,17 @@ exports.getCharactersByKeyword = function (req, res) {
           characters.forEach(function (character) {
             delete character.contributorId;
           });
-          return res.send(characters);
+
+          return res.send({
+            total: total,
+            perPage: perPage,
+            objects: characters 
+          });
+
         });
 
       } else {
+
         Character
           .find({
             _id: {
@@ -204,12 +212,24 @@ exports.getCharactersByKeyword = function (req, res) {
               delete character.sourceId;
               delete character.contributorId;
             });
-            return res.send(characters);
+
+            return res.send({
+              total: total,
+              perPage: perPage,
+              objects: characters 
+            });
+
           });
       }
     // no search result
     } else {
-      return res.send([]);
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: []
+      });
+
     }
   });
 };
@@ -259,7 +279,13 @@ exports.getCharactersBySourceId = function (req, res) {
           });
         });
     } else {
-      return res.send([]);
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: []
+      });
+
     }
 
   });
@@ -311,7 +337,13 @@ exports.getCharactersByUserId = function (req, res) {
           });
         });
     } else {
-      return res.send([]);
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: characters 
+      });
+
     }
 
   });
