@@ -18,6 +18,6 @@ var CharacterSchema = new Schema({
 });
 
 CharacterSchema.index({name: 1, alias: 1});
-CharacterSchema.plugin(mongoosastic)
+CharacterSchema.plugin(mongoosastic);
 
 mongoose.model('Character', CharacterSchema);
