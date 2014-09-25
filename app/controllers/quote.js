@@ -4,6 +4,10 @@ var User = require('../models').User;
 var utils = require('./utils');
 var async = require('async');
 
+var env = process.env.NODE_ENV || 'development';
+var config = require('../../config/config')[env];
+var perPage = config.perPage;
+
 exports.getQuotes = function (req, res) {
   Quote
     .find()
@@ -82,13 +86,14 @@ exports.getQuoteById = function (req, res) {
         }
       }
     ], function (err, quote, character, contributor) {
+      delete quote.characterId;
+      delete quote.contributorId;
+
       if (character) {
-        delete quote.characterId;
         quote.character = character;
       }
 
       if (contributor) {
-        delete quote.contributorId;
         quote.contributor = contributor;
       }
 
@@ -123,64 +128,116 @@ exports.putQuoteById = function (req, res) {
 
 exports.getQuotesByCharacterId = function (req, res) {
   var characterId = req.params.characterId;
-  var paginationId = req.query.paginationId;
+  var page = req.query.page || 1;
+  var size = req.query.perPage || perPage;
 
-  var options = {
-    targetCriteria: {
-      characterId: characterId
-    },
-    nextPageCriteria: {
-      characterId: characterId,
-      _id: {
-        $gt: paginationId
+  Quote.search({
+    sort: [
+      {
+        createdAt: {
+          order: 'asc'
+        }
+      }
+    ],
+    query: {
+      term: {
+        characterId: characterId
       }
     },
-    prevPageCriteria: {
-      characterId: characterId,
-      _id: {
-        $lt: paginationId
-      }
-    },
-    otherPageCriteria: {
-      characterId: characterId,
-      _id: {
-        $gte: paginationId
-      }
+    fields: [],
+    from: (page - 1) * size,
+    size: size
+  }, function (err, _results) {
+    var output = [];
+    var total = _results.hits.total;
+    var results = _results.hits.hits;
+
+    if (results.length > 0) {
+      var ids = results.map(function (r) { return r._id; });
+      Quote
+        .find({
+          _id: {
+            $in: ids
+          }
+        })
+        .exec(function (err, quotes) {
+
+          return res.send({
+            total: total,
+            perPage: perPage,
+            objects: quotes 
+          });
+
+        });
+    } else {
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: []
+      });
+
     }
-  };
 
-  return utils.paging(req, res, Quote, options);
+  });
+
 };
 
 exports.getQuotesByUserId = function (req, res) {
   var userId = req.user._id;
-  var paginationId = req.query.paginationId;
+  var page = req.query.page || 1;
+  var size = req.query.perPage || perPage;
 
-  var options = {
-    targetCriteria: {
-      contributorId: userId
-    },
-    nextPageCriteria: {
-      contributorId: userId,
-      _id: {
-        $gt: paginationId
+  Quote.search({
+    sort: [
+      {
+        createdAt: {
+          order: 'asc'
+        }
+      }
+    ],
+    query: {
+      term: {
+        contributorId: userId
       }
     },
-    prevPageCriteria: {
-      contributorId: userId,
-      _id: {
-        $lt: paginationId
-      }
-    },
-    otherPageCriteria: {
-      contributorId: userId,
-      _id: {
-        $gte: paginationId
-      }
+    fields: [],
+    from: (page - 1) * size,
+    size: size
+  }, function (err, _results) {
+    var output = [];
+    var total = _results.hits.total;
+    var results = _results.hits.hits;
+
+    if (results.length > 0) {
+      var ids = results.map(function (r) { return r._id; });
+      Quote
+        .find({
+          _id: {
+            $in: ids
+          }
+        })
+        .exec(function (err, quotes) {
+
+          return res.send({
+            total: total,
+            perPage: perPage,
+            objects: quotes 
+          });
+
+        });
+    } else {
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: []
+      });
+
     }
-  };
 
-  return utils.paging(req, res, Quote, options);
+  });
+
 };
 
 exports.putQuoteLikerIdById = function (req, res) {
