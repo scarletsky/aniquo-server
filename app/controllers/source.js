@@ -88,7 +88,8 @@ exports.getSourcesByKeyword = function (req, res) {
         createdAt: {
           order: 'desc'
         }
-      }
+      },
+      '_score'
     ],
     query: {
       match: {
@@ -116,14 +117,22 @@ exports.getSourcesByKeyword = function (req, res) {
           createdAt: -1
         })
         .exec(function (err, sources) {
+
           return res.send({
             total: total,
             perPage: perPage,
             objects: sources
           });
+
         });
     } else {
-      return res.send([]);
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: sources
+      });
+
     }
 
   });
@@ -167,14 +176,22 @@ exports.getSourcesByUserId = function (req, res) {
           createdAt: -1
         })
         .exec(function (err, sources) {
+
           return res.send({
             total: total,
             perPage: perPage,
             objects: sources
           });
+
         });
     } else {
-      return res.send([]);
+
+      return res.send({
+        total: total,
+        perPage: perPage,
+        objects: sources
+      });
+
     }
 
   });
