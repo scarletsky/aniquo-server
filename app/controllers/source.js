@@ -130,7 +130,7 @@ exports.getSourcesByKeyword = function (req, res) {
       return res.send({
         total: total,
         perPage: perPage,
-        objects: sources
+        objects: []
       });
 
     }
@@ -189,7 +189,7 @@ exports.getSourcesByUserId = function (req, res) {
       return res.send({
         total: total,
         perPage: perPage,
-        objects: sources
+        objects: []
       });
 
     }

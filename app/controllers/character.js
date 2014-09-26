@@ -193,7 +193,7 @@ exports.getCharactersByKeyword = function (req, res) {
           return res.send({
             total: total,
             perPage: perPage,
-            objects: characters 
+            objects: characters
           });
 
         });
@@ -330,18 +330,20 @@ exports.getCharactersByUserId = function (req, res) {
           createdAt: -1
         })
         .exec(function (err, characters) {
+
           return res.send({
             total: total,
             perPage: perPage,
-            objects: characters 
+            objects: characters
           });
+
         });
     } else {
 
       return res.send({
         total: total,
         perPage: perPage,
-        objects: characters 
+        objects: [] 
       });
 
     }
