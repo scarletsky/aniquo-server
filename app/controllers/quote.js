@@ -76,7 +76,7 @@ exports.getQuoteById = function (req, res) {
       function (quote, character, callback) {
         if (withContributor) {
           User
-            .findById(quote.contributorId)
+            .findById(quote.contributorId, '-passwordHash')
             .lean()
             .exec(function (err, contributor) {
               callback(null, quote, character, contributor);
