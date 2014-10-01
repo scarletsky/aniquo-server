@@ -59,8 +59,8 @@ exports.getSourceById = function (req, res) {
   var sourceId = req.params.sourceId;
 
   Source
-    .findById(sourceId, function (err, user) {
-      return res.send(user);
+    .findById(sourceId, function (err, source) {
+      return res.send(source);
     });
 };
 
