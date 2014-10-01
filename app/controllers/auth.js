@@ -18,7 +18,10 @@ exports.authenticate = function (req, res) {
 
       if (user.auth(password)) {
         user = user.toObject();
-        delete user.passwordHash;
+        user = {
+          _id: user._id,
+          username: user.username
+        };
         var token = jwt.sign(user, config.sessionSecret, {
           expiresInMinutes: 60*5
         });
