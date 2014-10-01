@@ -45,7 +45,8 @@ exports.postSource = function (req, res) {
   var obj = {
     name: req.param('name'),
     alias: req.param('alias'),
-    info: req.param('info')
+    info: req.param('info'),
+    contributorId: req.user._id
   };
 
   var source = new Source(obj);

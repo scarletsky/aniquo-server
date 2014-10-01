@@ -21,7 +21,8 @@ exports.postQuote = function (req, res) {
   var obj = {
     characterId: req.param('characterId'),
     quote: req.param('quote'),
-    reference: req.param('reference')
+    reference: req.param('reference'),
+    contributorId: req.user._id
   };
 
   var quote = new Quote(obj);

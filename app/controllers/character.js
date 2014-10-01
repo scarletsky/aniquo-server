@@ -49,7 +49,8 @@ exports.postCharacter = function (req, res) {
     name: req.param('name'),
     alias: req.param('alias'),
     info: req.param('info'),
-    sourceId: req.param('sourceId')
+    sourceId: req.param('sourceId'),
+    contributorId: req.user._id
   };
 
   var character = new Character(obj);
