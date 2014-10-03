@@ -11,6 +11,10 @@
     "express-jwt": "^0.2.1",
     "jsonwebtoken": "^0.4.0",
     "qn": "^0.2.2",
-    "mongoosastic": "^0.4.1"
+    "mongoosastic": "^0.4.1",
+    "eventproxy": "^0.3.1"
+  },
+  "devDependencies": {
+    "shelljs": "^0.3.0"
   }
 }
