@@ -93,14 +93,15 @@ exports.getSourcesByKeyword = function (req, res) {
       '_score'
     ],
     query: {
-      match: {
-        _all: keyword
+      multi_match: {
+        query: keyword,
+        fields: ['name', 'alias']
       }
     },
     fields: [],
     from: (page - 1) * size,
     size: size,
-    min_score: 0.5
+    min_score: 0.4
   }, function (err, _results) {
     var output = [];
     var total = _results.hits.total;

@@ -128,8 +128,9 @@ exports.getCharactersByKeyword = function (req, res) {
       '_score'
     ],
     query: {
-      match: {
-        _all: keyword
+      multi_match: {
+        query: keyword,
+        fields: ['name', 'alias']
       }
     },
     fields: [],
