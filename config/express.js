@@ -14,13 +14,6 @@ module.exports = function (app, config) {
   app.use(express.session({
     secret: config.sessionSecret
   }));
-  // app.use(express.csrf());
-  // app.use(function (req, res, next) {
-  //   res.locals.token = req.session ? req.csrfToken() : '';
-  //   res.locals.userId = req.session.userId || '';
-  //   next();
-  // });
-  app.use(express.static(path.join(__dirname, '../public')));
   app.use(app.router);
 
   if ('development' == app.get('env')) {
