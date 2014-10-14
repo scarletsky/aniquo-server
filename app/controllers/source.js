@@ -46,7 +46,8 @@ exports.postSource = function (req, res) {
     name: req.param('name'),
     alias: req.param('alias'),
     info: req.param('info'),
-    contributorId: req.user._id
+    contributorId: req.user._id,
+    cover: req.param('cover')
   };
 
   var source = new Source(obj);
@@ -69,7 +70,8 @@ exports.putSourceById = function (req, res) {
   var obj = {
     name: req.param('name'),
     alias: req.param('alias'),
-    info: req.param('info')
+    info: req.param('info'),
+    cover: req.param('cover')
   };
 
   Source

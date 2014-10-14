@@ -11,6 +11,7 @@ var CharacterSchema = new Schema({
   name: {type: String, es_indexed: true},
   alias: {type: Array, es_indexed: true},
   info: {type: String, default: ''},
+  avatar: {type: String},
   sourceId: {type: ObjectId, es_indexed: true},
   quotesCount: {type: Number, default: 0, es_indexed: true},
   contributorId: {type: ObjectId, es_indexed: true},

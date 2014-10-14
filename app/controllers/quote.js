@@ -22,7 +22,8 @@ exports.postQuote = function (req, res) {
     characterId: req.param('characterId'),
     quote: req.param('quote'),
     reference: req.param('reference'),
-    contributorId: req.user._id
+    contributorId: req.user._id,
+    scene: req.param('scene')
   };
 
   var quote = new Quote(obj);
@@ -118,7 +119,8 @@ exports.putQuoteById = function (req, res) {
   var obj = {
     characterId: req.param('characterId'),
     quote: req.param('quote'),
-    reference: req.param('reference')
+    reference: req.param('reference'),
+    scene: req.param('scene')
   };
 
   Quote

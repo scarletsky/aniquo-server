@@ -10,6 +10,7 @@ var mongoosastic = require('mongoosastic');
 var QuoteSchema = new Schema({
   characterId: {type: ObjectId, es_indexed: true},
   quote: {type: String},
+  scene: {type: String},
   likeCount: {type: Number, default: 0, es_indexed: true},
   likerIds: {type: Array, default: []},
   viewCount: {type: Number, default: 0, es_indexed: true},

@@ -50,7 +50,8 @@ exports.postCharacter = function (req, res) {
     alias: req.param('alias'),
     info: req.param('info'),
     sourceId: req.param('sourceId'),
-    contributorId: req.user._id
+    contributorId: req.user._id,
+    avatar: req.param('avatar')
   };
 
   var character = new Character(obj);
@@ -104,7 +105,8 @@ exports.putCharacterById = function (req, res) {
     name: req.param('name'),
     alias: req.param('alias') || [],
     info: req.param('info'),
-    sourceId: req.param('sourceId')
+    sourceId: req.param('sourceId'),
+    avatar: req.param('avatar')
   };
 
   Character
