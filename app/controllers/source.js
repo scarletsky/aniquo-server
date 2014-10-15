@@ -102,8 +102,7 @@ exports.getSourcesByKeyword = function (req, res) {
     },
     fields: [],
     from: (page - 1) * size,
-    size: size,
-    min_score: 0.4
+    size: size
   }, function (err, _results) {
     var output = [];
     var total = _results.hits.total;
