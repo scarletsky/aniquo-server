@@ -1,4 +1,4 @@
-# Valkyrie Project
+# Lenneth Project
 
 ### 简介
 
@@ -13,7 +13,7 @@
 
 ```bash
 $ npm install -g supervisor
-$ cd Valkyrie
+$ cd Lenneth
 $ npm install
 
 $ nohup elasticsearch &
@@ -21,6 +21,6 @@ $ supervisor node app
 ```
 
 ### 规范
-可以在 [issues](https://github.com/scarletsky/Valkyrie/issues/3) 中查看。
+可以在 [issues](https://github.com/scarletsky/Lenneth/issues/3) 中查看。
 
 ### 欢迎 Pull Requests & Issues.
