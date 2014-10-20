@@ -46,6 +46,7 @@ exports.getQuoteByKeyword = function (req, res) {
 exports.getQuoteById = function (req, res) {
   var userId = req.user ? req.user._id : undefined;
   var quoteId = req.params.quoteId;
+
   var withCharacter = req.query.with_character;
   var withContributor = req.query.with_contributor; 
 
@@ -65,7 +66,7 @@ exports.getQuoteById = function (req, res) {
       },
       function (quote, callback) {
         if (withCharacter) {
-          var characterId = quote.characterIds[
+          var characterId = req.query.characterId || quote.characterIds[
             Math.floor(Math.random() * quote.characterIds.length)
           ];
           Character
