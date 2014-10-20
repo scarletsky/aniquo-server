@@ -2,5 +2,7 @@ node_modules/
 app/components/
 config/config.js
 data/
+images/
 data.js
 addIndex.js
+uploadImages.js
