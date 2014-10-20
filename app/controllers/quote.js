@@ -19,7 +19,7 @@ exports.getQuotes = function (req, res) {
 
 exports.postQuote = function (req, res) {
   var obj = {
-    characterId: req.param('characterId'),
+    characterIds: req.param('characterId'),
     quote: req.param('quote'),
     reference: req.param('reference'),
     contributorId: req.user._id,
@@ -65,8 +65,11 @@ exports.getQuoteById = function (req, res) {
       },
       function (quote, callback) {
         if (withCharacter) {
+          var characterId = quote.characterIds[
+            Math.floor(Math.random() * quote.characterIds.length)
+          ];
           Character
-            .findById(quote.characterId)
+            .findById(characterId)
             .lean()
             .exec(function (err, character) {
               callback(null, quote, character);
@@ -88,7 +91,7 @@ exports.getQuoteById = function (req, res) {
         }
       }
     ], function (err, quote, character, contributor) {
-      delete quote.characterId;
+      delete quote.characterIds;
       delete quote.contributorId;
 
       if (character) {
@@ -117,7 +120,7 @@ exports.getQuoteById = function (req, res) {
 exports.putQuoteById = function (req, res) {
   var quoteId =req.params.quoteId;
   var obj = {
-    characterId: req.param('characterId'),
+    characterIds: req.param('characterId'),
     quote: req.param('quote'),
     reference: req.param('reference'),
     scene: req.param('scene')
@@ -142,9 +145,9 @@ exports.getQuotesByCharacterId = function (req, res) {
         }
       }
     ],
-    query: {
+    filter: {
       term: {
-        characterId: characterId
+        characterIds: characterId
       }
     },
     fields: [],
