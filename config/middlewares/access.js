@@ -1,6 +1,5 @@
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config')[env];
-var allowIps = config.allowIps;
 
 exports.allowCORS = function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -11,14 +10,6 @@ exports.allowCORS = function (req, res, next) {
     res.send(200);
   }
   else {
-    next();
-  }
-};
-
-exports.allowAccess = function (req, res, next) {
-  if (allowIps.indexOf(req.ip) === -1) {
-    res.send(403);
-  } else {
     next();
   }
 };
