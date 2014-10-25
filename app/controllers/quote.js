@@ -19,7 +19,7 @@ exports.getQuotes = function (req, res) {
 
 exports.postQuote = function (req, res) {
   var obj = {
-    characterIds: req.param('characterId'),
+    characterIds: req.param('characterIds'),
     quote: req.param('quote'),
     reference: req.param('reference'),
     contributorId: req.user._id,
@@ -48,9 +48,10 @@ exports.getQuoteById = function (req, res) {
   var quoteId = req.params.quoteId;
 
   var withCharacter = req.query.with_character;
+  var withCharacterAll = req.query.with_character_all;
   var withContributor = req.query.with_contributor; 
 
-  if (withCharacter || withContributor) {
+  if (withCharacterAll || withCharacter || withContributor) {
     async.waterfall([
       function (callback) {
         Quote
@@ -65,7 +66,17 @@ exports.getQuoteById = function (req, res) {
           });
       },
       function (quote, callback) {
-        if (withCharacter) {
+        if (withCharacterAll) {
+          Character
+            .find({
+              _id: {
+                $in: quote.characterIds
+              }
+            })
+            .exec(function (err, character) {
+              callback(null, quote, character)
+            })
+        } else if (withCharacter) {
           var characterId = req.query.characterId || quote.characterIds[
             Math.floor(Math.random() * quote.characterIds.length)
           ];
@@ -121,7 +132,7 @@ exports.getQuoteById = function (req, res) {
 exports.putQuoteById = function (req, res) {
   var quoteId =req.params.quoteId;
   var obj = {
-    characterIds: req.param('characterId'),
+    characterIds: req.param('characterIds'),
     quote: req.param('quote'),
     reference: req.param('reference'),
     scene: req.param('scene')
