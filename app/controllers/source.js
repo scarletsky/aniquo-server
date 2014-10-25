@@ -69,9 +69,9 @@ exports.putSourceById = function (req, res) {
   var sourceId = req.params.sourceId;
   var obj = {
     name: req.param('name'),
-    alias: req.param('alias'),
-    info: req.param('info'),
-    cover: req.param('cover')
+    alias: req.param('alias') || [],
+    info: req.param('info') || '',
+    cover: req.param('cover') || ''
   };
 
   Source

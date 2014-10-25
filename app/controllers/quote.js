@@ -134,8 +134,8 @@ exports.putQuoteById = function (req, res) {
   var obj = {
     characterIds: req.param('characterIds'),
     quote: req.param('quote'),
-    reference: req.param('reference'),
-    scene: req.param('scene')
+    reference: req.param('reference') || '',
+    scene: req.param('scene') || ''
   };
 
   Quote

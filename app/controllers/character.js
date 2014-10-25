@@ -104,9 +104,9 @@ exports.putCharacterById = function (req, res) {
   var obj = {
     name: req.param('name'),
     alias: req.param('alias') || [],
-    info: req.param('info'),
+    info: req.param('info') || '',
     sourceId: req.param('sourceId'),
-    avatar: req.param('avatar')
+    avatar: req.param('avatar') || ''
   };
 
   Character
