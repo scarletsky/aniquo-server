@@ -36,12 +36,19 @@ exports.checkCharacter = function (req, res) {
 };
 
 exports.getCharacters = function (req, res) {
-  Character
-    .find()
-    .limit(20)
-    .exec(function (err, characters) {
-      return res.send(characters);
-    });
+  var page = req.query.page || 1;
+  var limit = req.query.perPage || perPage;
+
+  Character.paginate({}, page, limit, function (err, pageCount, characters, total) {
+
+    var results = {
+      pageCount: pageCount,
+      objects: characters,
+      total: total 
+    }
+
+    return res.send(results);
+  });
 };
 
 exports.postCharacter = function (req, res) {

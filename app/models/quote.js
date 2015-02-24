@@ -5,21 +5,21 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var mongoosastic = require('mongoosastic');
+var mongoosePaginate = require('mongoose-paginate');
 
 var QuoteSchema = new Schema({
-  characterIds: {type: [ObjectId], es_indexed: true},
+  characterIds: {type: [ObjectId]},
   quote: {type: String},
   scene: {type: String},
-  likeCount: {type: Number, default: 0, es_indexed: true},
+  likeCount: {type: Number, default: 0},
   likerIds: {type: Array, default: []},
-  viewCount: {type: Number, default: 0, es_indexed: true},
+  viewCount: {type: Number, default: 0},
   reference: {type: String},
-  contributorId: {type: ObjectId, es_indexed: true},
-  createdAt: {type: Date, default: Date.now, es_indexed: true},
+  contributorId: {type: ObjectId},
+  createdAt: {type: Date, default: Date.now},
 });
 
 QuoteSchema.index({_id: -1, likeIds: -1, createdAt: -1});
-QuoteSchema.plugin(mongoosastic);
+QuoteSchema.plugin(mongoosePaginate);
 
 mongoose.model('Quote', QuoteSchema);

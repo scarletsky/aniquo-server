@@ -5,20 +5,20 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var mongoosastic = require('mongoosastic');
+var mongoosePaginate = require('mongoose-paginate');
 
 var CharacterSchema = new Schema({
-  name: {type: String, es_indexed: true},
-  alias: {type: Array, es_indexed: true},
+  name: {type: String},
+  alias: {type: Array},
   info: {type: String, default: ''},
   avatar: {type: String},
-  sourceId: {type: ObjectId, es_indexed: true},
-  quotesCount: {type: Number, default: 0, es_indexed: true},
-  contributorId: {type: ObjectId, es_indexed: true},
-  createdAt: {type: Date, default: Date.now, es_indexed: true}
+  sourceId: {type: ObjectId},
+  quotesCount: {type: Number, default: 0},
+  contributorId: {type: ObjectId},
+  createdAt: {type: Date, default: Date.now}
 });
 
 CharacterSchema.index({name: 1, alias: 1});
-CharacterSchema.plugin(mongoosastic);
+CharacterSchema.plugin(mongoosePaginate);
 
 mongoose.model('Character', CharacterSchema);

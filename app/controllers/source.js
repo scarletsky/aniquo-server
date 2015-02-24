@@ -1,4 +1,5 @@
 var Source = require('../models').Source;
+var Quote = require('../models').Quote;
 var utils = require('./utils');
 var async = require('async');
 
@@ -33,12 +34,20 @@ exports.checkSource = function (req, res) {
 };
 
 exports.getSources = function (req, res) {
-  Source
-    .find()
-    .limit(20)
-    .exec(function (err, sources) {
-      return res.send(sources);
-    });
+  var page = req.query.page || 1;
+  var limit = req.query.perPage || perPage;
+
+  Source.paginate({}, page, limit, function (err, pageCount, sources, total) {
+
+    var results = {
+      pageCount: pageCount,
+      objects: sources,
+      total: total 
+    }
+
+    return res.send(results);
+  });
+  
 };
 
 exports.postSource = function (req, res) {

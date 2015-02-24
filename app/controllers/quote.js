@@ -9,12 +9,19 @@ var config = require('../../config/config')[env];
 var perPage = config.perPage;
 
 exports.getQuotes = function (req, res) {
-  Quote
-    .find()
-    .limit(20)
-    .exec(function (err, quotes) {
-      return res.send(quotes);
-    });
+  var page = req.query.page || 1;
+  var size = req.query.perPage || perPage;
+
+  Quote.paginate({}, page, size, function (err, pageCount, quotes, total) {
+
+    var results = {
+      pageCount: pageCount,
+      objects: quotes,
+      total: total 
+    }
+
+    return res.send(results);
+  });
 };
 
 exports.postQuote = function (req, res) {

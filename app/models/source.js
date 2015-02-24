@@ -5,18 +5,18 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var mongoosastic = require('mongoosastic');
+var mongoosePaginate = require('mongoose-paginate');
 
 var SourceSchema = new Schema({
-  name: {type: String, unique: true, es_indexed: true},
-  alias: {type: Array, es_indexed: true},
+  name: {type: String, unique: true},
+  alias: {type: Array},
   info: {type: String},
   cover: {type: String},
-  contributorId: {type: ObjectId, es_indexed: true},
-  createdAt: {type: Date, default: Date.now, es_type: 'date', es_indexed: true}
+  contributorId: {type: ObjectId},
+  createdAt: {type: Date, default: Date.now, es_type: 'date'}
 });
 
 SourceSchema.index({name: 1, alias: 1});
-SourceSchema.plugin(mongoosastic)
+SourceSchema.plugin(mongoosePaginate);
 
 mongoose.model('Source', SourceSchema);

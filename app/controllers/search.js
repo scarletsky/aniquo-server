@@ -8,7 +8,7 @@ exports.search = function (req, res) {
   /**
    * from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
    */
-  req.query.kw = req.query.kw.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  req.query.kw = req.query.kw ? req.query.kw.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") : '';
 
   switch (type) {
     case 'user':
