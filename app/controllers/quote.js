@@ -14,13 +14,35 @@ exports.getQuotes = function (req, res) {
 
   Quote.paginate({}, page, size, function (err, pageCount, quotes, total) {
 
-    var results = {
-      pageCount: pageCount,
-      objects: quotes,
-      total: total 
-    }
+    async.mapSeries(quotes, function (q, callback) {
 
-    return res.send(results);
+      Character
+        .find({
+          _id: {
+            $in: q.characterIds
+          }
+        })
+        .exec(function (err, characters) {
+
+          q.characters = characters;
+          delete q.characterIds;
+          callback(null, q);
+
+        });
+
+    }, function (err, qs) {
+
+      var results = {
+        pageCount: pageCount,
+        objects: quotes,
+        total: total 
+      }
+
+      return res.send(results);
+
+    })
+  }, {
+    lean: true
   });
 };
 
