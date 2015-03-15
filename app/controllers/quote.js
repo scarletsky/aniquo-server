@@ -44,6 +44,7 @@ exports.getQuotes = function (req, res) {
   }, {
     lean: true
   });
+
 };
 
 exports.postQuote = function (req, res) {
@@ -80,7 +81,7 @@ exports.getQuoteById = function (req, res) {
   var withCharacterAll = req.query.with_character_all;
   var withContributor = req.query.with_contributor; 
 
-  if (withCharacterAll || withCharacter || withContributor) {
+  if (withCharacterAll || withContributor) {
     async.waterfall([
       function (callback) {
         Quote
@@ -102,41 +103,31 @@ exports.getQuoteById = function (req, res) {
                 $in: quote.characterIds
               }
             })
-            .exec(function (err, character) {
-              callback(null, quote, character)
+            .exec(function (err, characters) {
+              callback(null, quote, characters)
             })
-        } else if (withCharacter) {
-          var characterId = req.query.characterId || quote.characterIds[
-            Math.floor(Math.random() * quote.characterIds.length)
-          ];
-          Character
-            .findById(characterId)
-            .lean()
-            .exec(function (err, character) {
-              callback(null, quote, character);
-            });
         } else {
           callback(null, quote, null);
         }
       },
-      function (quote, character, callback) {
+      function (quote, characters, callback) {
         if (withContributor) {
           User
             .findById(quote.contributorId, '-passwordHash')
             .lean()
             .exec(function (err, contributor) {
-              callback(null, quote, character, contributor);
+              callback(null, quote, characters, contributor);
             });
         } else {
-          callback(null, quote, character, null);
+          callback(null, quote, characters, null);
         }
       }
-    ], function (err, quote, character, contributor) {
+    ], function (err, quote, characters, contributor) {
       delete quote.characterIds;
       delete quote.contributorId;
 
-      if (character) {
-        quote.character = character;
+      if (characters) {
+        quote.characters = characters;
       }
 
       if (contributor) {
@@ -178,55 +169,43 @@ exports.getQuotesByCharacterId = function (req, res) {
   var page = req.query.page || 1;
   var size = req.query.perPage || perPage;
 
-  Quote.search({
-    sort: [
-      {
-        createdAt: {
-          order: 'asc'
-        }
-      }
-    ],
-    filter: {
-      term: {
-        characterIds: characterId
-      }
-    },
-    fields: [],
-    from: (page - 1) * size,
-    size: size
-  }, function (err, _results) {
-    var output = [];
-    var total = _results.hits.total;
-    var results = _results.hits.hits;
+  Quote.paginate({
+    characterIds: {
+      $in: [characterId]
+    }
+  }, page, size, function (err, pageCount, quotes, total) {
 
-    if (results.length > 0) {
-      var ids = results.map(function (r) { return r._id; });
-      Quote
+    async.mapSeries(quotes, function (q, callback) {
+
+      Character
         .find({
           _id: {
-            $in: ids
+            $in: q.characterIds
           }
         })
-        .exec(function (err, quotes) {
+        .exec(function (err, characters) {
 
-          return res.send({
-            total: total,
-            perPage: perPage,
-            objects: quotes 
-          });
+          q.characters = characters;
+          delete q.characterIds;
+          callback(null, q);
 
         });
-    } else {
 
-      return res.send({
-        total: total,
-        perPage: perPage,
-        objects: []
-      });
+    }, function (err, qs) {
 
-    }
+      var results = {
+        pageCount: pageCount,
+        objects: quotes,
+        total: total 
+      }
 
+      return res.send(results);
+
+    })
+  }, {
+    lean: true
   });
+
 
 };
 

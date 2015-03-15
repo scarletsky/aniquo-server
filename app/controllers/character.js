@@ -247,57 +247,17 @@ exports.getCharactersByKeyword = function (req, res) {
 exports.getCharactersBySourceId = function (req, res) {
   var sourceId = req.params.sourceId;
   var page = req.query.page || 1;
-  var size = req.query.perPage || perPage;
+  var limit = req.query.perPage || perPage;
 
-  Character.search({
-    sort: [
-      {
-        quotesCount: {
-          order: 'desc'
-        }
-      }
-    ],
-    query: {
-      term: {
-        sourceId: sourceId
-      }
-    },
-    fields: [],
-    from: (page - 1) * size,
-    size: size
-  }, function (err, _results) {
-    var output = [];
-    var total = _results.hits.total;
-    var results = _results.hits.hits;
+  Character.paginate({sourceId: sourceId}, page, limit, function (err, pageCount, characters, total) {
 
-    if (results.length > 0) {
-      var ids = results.map(function (r) { return r._id; });
-      Character
-        .find({
-          _id: {
-            $in: ids
-          }
-        })
-        .sort({
-          quotesCount: -1
-        })
-        .exec(function (err, characters) {
-          return res.send({
-            total: total,
-            perPage: perPage,
-            objects: characters 
-          });
-        });
-    } else {
-
-      return res.send({
-        total: total,
-        perPage: perPage,
-        objects: []
-      });
-
+    var results = {
+      pageCount: pageCount,
+      objects: characters,
+      total: total 
     }
 
+    return res.send(results);
   });
 
 };
