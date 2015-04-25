@@ -43,7 +43,7 @@ exports.getUsersByKeyword = function (req, res) {
 
 exports.putUser = function (req, res) {
   var userId = req.user._id;
-  var isChangePassword = req.param('oldPassword') && req.param('newPassword') ? true : false;
+  var isChangePassword = req.body.oldPassword && req.body.newPassword ? true : false;
 
   if (!isChangePassword) {
     var data = {};
@@ -64,20 +64,20 @@ exports.putUser = function (req, res) {
       });
 
   } else if (isChangePassword) {
-    var oldPassword = req.param('oldPassword');
-    var newPassword = req.param('newPassword');
+    var oldPassword = req.body.oldPassword;
+    var newPassword = req.body.newPassword;
 
     User
       .findById(userId)
       .exec(function (err, user) {
         if (!user.auth(oldPassword)) {
-          return res.send(403, {error: '密码错误'});
+          return res.status(403).send({error: '密码错误'});
         } else {
           user.password = newPassword;
           user.save(function (err, user) {
             user = user.toObject();
             delete user.passwordHash;
-            return res.send(200, user);
+            return res.status(200).send(user);
           });
         }
       });

@@ -49,11 +49,11 @@ exports.getQuotes = function (req, res) {
 
 exports.postQuote = function (req, res) {
   var obj = {
-    characterIds: req.param('characterIds'),
-    quote: req.param('quote'),
-    reference: req.param('reference'),
+    characterIds: req.body.characterIds,
+    quote: req.body.quote,
+    reference: req.body.reference,
     contributorId: req.user._id,
-    scene: req.param('scene')
+    scene: req.body.scene
   };
 
   var quote = new Quote(obj);
@@ -152,10 +152,10 @@ exports.getQuoteById = function (req, res) {
 exports.putQuoteById = function (req, res) {
   var quoteId =req.params.quoteId;
   var obj = {
-    characterIds: req.param('characterIds'),
-    quote: req.param('quote'),
-    reference: req.param('reference') || '',
-    scene: req.param('scene') || ''
+    characterIds: req.body.characterIds,
+    quote: req.body.quote,
+    reference: req.body.reference || '',
+    scene: req.body.scene || ''
   };
 
   Quote

@@ -53,12 +53,12 @@ exports.getCharacters = function (req, res) {
 
 exports.postCharacter = function (req, res) {
   var obj = {
-    name: req.param('name'),
-    alias: req.param('alias'),
-    info: req.param('info'),
-    sourceId: req.param('sourceId'),
+    name: req.body.name,
+    alias: req.body.alias,
+    info: req.body.info,
+    sourceId: req.body.sourceId,
     contributorId: req.user._id,
-    avatar: req.param('avatar')
+    avatar: req.body.avatar
   };
 
   var character = new Character(obj);
@@ -109,11 +109,11 @@ exports.getCharacterById = function (req, res) {
 exports.putCharacterById = function (req, res) {
   var characterId = req.params.characterId;
   var obj = {
-    name: req.param('name'),
-    alias: req.param('alias') || [],
-    info: req.param('info') || '',
-    sourceId: req.param('sourceId'),
-    avatar: req.param('avatar') || ''
+    name: req.body.name,
+    alias: req.body.alias || [],
+    info: req.body.info || '',
+    sourceId: req.body.sourceId,
+    avatar: req.body.avatar || ''
   };
 
   Character
@@ -135,6 +135,8 @@ exports.getCharactersByKeyword = function (req, res) {
     })
     .lean()
     .exec(function (err, characters) {
+      console.log(err);
+      console.log(characters);
       return res.send(characters);
     });
 };

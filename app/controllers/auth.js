@@ -4,8 +4,8 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 
 exports.authenticate = function (req, res) {
-  var username = req.param('username');
-  var password = req.param('password');
+  var username = req.body.username;
+  var password = req.body.password;
 
   User
     .findOne({
@@ -13,7 +13,7 @@ exports.authenticate = function (req, res) {
     })
     .exec(function (err, user) {
       if (!user) {
-        return res.send(403, {error: '用户不存在'});
+        return res.status(403).send({error: '用户不存在'});
       }
 
       if (user.auth(password)) {
@@ -26,12 +26,12 @@ exports.authenticate = function (req, res) {
           expiresInMinutes: 60*5
         });
 
-        return res.send(200, {
+        return res.status(200).send({
           user: user,
           token: token
         });
       } else {
-        return res.send(403, {error: '用户名或密码错误'});
+        return res.status(403).send({error: '用户名或密码错误'});
       }
     });
 };
@@ -46,7 +46,7 @@ exports.register = function (req, res) {
     })
     .exec(function (err, user) {
       if (user) {
-        return res.send(403, {error: '该用户已存在'});
+        return res.status(403).send({error: '该用户已存在'});
       }
 
       user = new User({
@@ -61,7 +61,7 @@ exports.register = function (req, res) {
           expiresInMinutes: 60*5
         });
 
-        return res.send(200, {
+        return res.status(200).send({
           user: user,
           token: token
         });

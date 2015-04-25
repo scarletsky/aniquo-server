@@ -52,11 +52,11 @@ exports.getSources = function (req, res) {
 
 exports.postSource = function (req, res) {
   var obj = {
-    name: req.param('name'),
-    alias: req.param('alias'),
-    info: req.param('info'),
+    name: req.body.name,
+    alias: req.body.alias,
+    info: req.body.info,
     contributorId: req.user._id,
-    cover: req.param('cover')
+    cover: req.body.cover
   };
 
   var source = new Source(obj);
@@ -77,10 +77,10 @@ exports.getSourceById = function (req, res) {
 exports.putSourceById = function (req, res) {
   var sourceId = req.params.sourceId;
   var obj = {
-    name: req.param('name'),
-    alias: req.param('alias') || [],
-    info: req.param('info') || '',
-    cover: req.param('cover') || ''
+    name: req.body.name,
+    alias: req.body.alias || [],
+    info: req.body.info || '',
+    cover: req.body.cover || ''
   };
 
   Source
