@@ -1,8 +1,8 @@
 module.exports = {
-  development: {
-    db: 'mongodb://localhost/yourdb',
-    sessionSecret: 'what should i do?'
-  },
+    development: {
+        db: 'mongodb://localhost/yourdb',
+        sessionSecret: 'what should i do?'
+    },
 
-  production: {}
+    production: {}
 };

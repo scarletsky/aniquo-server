@@ -2,12 +2,12 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var qn = require('qn');
 var client = qn.create({
-  accessKey: config.qiniu.accessKey,
-  secretKey: config.qiniu.secretKey,
-  bucket: config.qiniu.bucket,
-  domain: config.qiniu.domain
+    accessKey: config.qiniu.accessKey,
+    secretKey: config.qiniu.secretKey,
+    bucket: config.qiniu.bucket,
+    domain: config.qiniu.domain
 });
 
 exports.getUploadToken = function (req, res) {
-  return res.send(client.uploadToken()) ;
+    return res.send(client.uploadToken()) ;
 };

@@ -1,29 +1,29 @@
 exports.setLikedField = function (document, userId) {
-  var isLiked;
+    var isLiked;
 
-  if (typeof document.toObject === 'function') {
-    document = document.toObject();
-  }
-
-  if (typeof userId !== 'undefined') {
-
-    if (document.likerIds.indexOf(userId) !== -1) {
-      isLiked = true;
-    } else {
-      isLiked = false;
+    if (typeof document.toObject === 'function') {
+        document = document.toObject();
     }
 
-    delete document.likerIds;
-    document.liked = isLiked;
+    if (typeof userId !== 'undefined') {
 
-    return document;
+        if (document.likerIds.indexOf(userId) !== -1) {
+            isLiked = true;
+        } else {
+            isLiked = false;
+        }
 
-  } else {
+        delete document.likerIds;
+        document.liked = isLiked;
 
-    delete document.likerIds;
+        return document;
 
-    return document;
+    } else {
 
-  }
+        delete document.likerIds;
+
+        return document;
+
+    }
 
 };
