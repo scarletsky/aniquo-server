@@ -205,65 +205,6 @@ exports.getQuotesByCharacterId = function (req, res) {
   }, {
     lean: true
   });
-
-
-};
-
-exports.getQuotesByUserId = function (req, res) {
-  var userId = req.user._id;
-  var page = req.query.page || 1;
-  var size = req.query.perPage || perPage;
-
-  Quote.search({
-    sort: [
-      {
-        createdAt: {
-          order: 'asc'
-        }
-      }
-    ],
-    query: {
-      term: {
-        contributorId: userId
-      }
-    },
-    fields: [],
-    from: (page - 1) * size,
-    size: size
-  }, function (err, _results) {
-    var output = [];
-    var total = _results.hits.total;
-    var results = _results.hits.hits;
-
-    if (results.length > 0) {
-      var ids = results.map(function (r) { return r._id; });
-      Quote
-        .find({
-          _id: {
-            $in: ids
-          }
-        })
-        .exec(function (err, quotes) {
-
-          return res.send({
-            total: total,
-            perPage: perPage,
-            objects: quotes 
-          });
-
-        });
-    } else {
-
-      return res.send({
-        total: total,
-        perPage: perPage,
-        objects: []
-      });
-
-    }
-
-  });
-
 };
 
 exports.putQuoteLikerIdById = function (req, res) {

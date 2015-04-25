@@ -32,7 +32,6 @@ module.exports = function (app, config) {
   app.get(apiPrefix + '/sources/:sourceId', source.getSourceById);
   app.put(apiPrefix + '/sources/:sourceId', expressJwt(jwtOptions), source.putSourceById);
   app.get(apiPrefix + '/sources/:sourceId/characters', character.getCharactersBySourceId);
-  app.get(apiPrefix + '/users/:userId/contribution/sources', expressJwt(jwtOptions), source.getSourcesByUserId);
 
   // characters
   app.get(apiPrefix + '/character/check', character.checkCharacter);
@@ -41,14 +40,12 @@ module.exports = function (app, config) {
   app.get(apiPrefix + '/characters/:characterId', character.getCharacterById);
   app.put(apiPrefix + '/characters/:characterId', expressJwt(jwtOptions), character.putCharacterById);
   app.get(apiPrefix + '/characters/:characterId/quotes', quote.getQuotesByCharacterId);
-  app.get(apiPrefix + '/users/:userId/contribution/characters', expressJwt(jwtOptions), character.getCharactersByUserId);
 
   // quotes
   app.get(apiPrefix + '/quotes', quote.getQuotes);
   app.post(apiPrefix + '/quotes', expressJwt(jwtOptions), quote.postQuote);
   app.get(apiPrefix + '/quotes/:quoteId', customJwt(jwtOptions), quote.getQuoteById);
   app.put(apiPrefix + '/quotes/:quoteId', expressJwt(jwtOptions), quote.putQuoteById);
-  app.get(apiPrefix + '/users/:userId/contribution/quotes', expressJwt(jwtOptions), quote.getQuotesByUserId);
   app.put(apiPrefix + '/user/like/quotes/:quoteId', expressJwt(jwtOptions), quote.putQuoteLikerIdById);
   app.delete(apiPrefix + '/user/like/quotes/:quoteId', expressJwt(jwtOptions), quote.deleteQuoteLikerIdById);
 

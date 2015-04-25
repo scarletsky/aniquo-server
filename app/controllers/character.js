@@ -135,8 +135,6 @@ exports.getCharactersByKeyword = function (req, res) {
     })
     .lean()
     .exec(function (err, characters) {
-      console.log(err);
-      console.log(characters);
       return res.send(characters);
     });
 };
@@ -155,66 +153,6 @@ exports.getCharactersBySourceId = function (req, res) {
     }
 
     return res.send(results);
-  });
-
-};
-
-exports.getCharactersByUserId = function (req, res) {
-  var userId = req.user._id;
-  var page = req.query.page || 1;
-  var size = req.query.perPage || perPage;
-
-  Character.search({
-    sort: [
-      {
-        createdAt: {
-          order: 'desc'
-        }
-      }
-    ],
-    query: {
-      term: {
-        contributorId: userId
-      }
-    },
-    fields: [],
-    from: (page - 1) * size,
-    size: size
-  }, function (err, _results) {
-    var output = [];
-    var total = _results.hits.total;
-    var results = _results.hits.hits;
-
-    if (results.length > 0) {
-      var ids = results.map(function (r) { return r._id; });
-      Character
-        .find({
-          _id: {
-            $in: ids
-          }
-        })
-        .sort({
-          createdAt: -1
-        })
-        .exec(function (err, characters) {
-
-          return res.send({
-            total: total,
-            perPage: perPage,
-            objects: characters
-          });
-
-        });
-    } else {
-
-      return res.send({
-        total: total,
-        perPage: perPage,
-        objects: [] 
-      });
-
-    }
-
   });
 
 };
