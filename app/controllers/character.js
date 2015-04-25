@@ -127,121 +127,16 @@ exports.getCharactersByKeyword = function (req, res) {
   var page = req.query.page || 1;
   var size = req.query.perPage || perPage;
 
-  Character.search({
-    sort: [
-      {
-        quotesCount: {
-          order: 'desc'
-        }
-      },
-      '_score'
-    ],
-    query: {
-      multi_match: {
-        query: keyword,
-        fields: ['name', 'alias']
-      }
-    },
-    fields: [],
-    from: (page - 1) * size,
-    size: size
-  }, function (err, _results) {
-    var output = [];
-    var total = _results.hits.total;
-    var results = _results.hits.hits;
+  var keywordReg = new RegExp('.*' + keyword + '.*');
 
-    if (results.length > 0) {
-
-      var ids = results.map(function (r) { return r._id; });
-
-      if (req.query.with_source === true) {
-
-        async.waterfall([
-
-          // query characters by ids
-          function (callback) {
-            Character
-              .find({
-                _id: {
-                  $in: ids
-                }
-              })
-              .lean()
-              .exec(function (err, characters) {
-                callback(null, characters);
-              });
-          },
-
-          // query sources by characters' sourceId
-          function (characters, callback) {
-
-            if (characters.length > 0) {
-              var charactersWithSource = [];
-              async.eachSeries(characters, function (character, callback) {
-                Source
-                  .findById(character.sourceId)
-                  .lean()
-                  .exec(function (err, source) {
-                    delete character.sourceId;
-                    character.source = source;
-                    charactersWithSource.push(character);
-                    callback();
-                  });
-              }, function (err) {
-                callback(null, charactersWithSource);
-              });
-
-            } else {
-              callback(null, []);
-            }
-          }
-        ], function (err, characters) {
-          characters.forEach(function (character) {
-            delete character.contributorId;
-          });
-
-          return res.send({
-            total: total,
-            perPage: perPage,
-            objects: characters
-          });
-
-        });
-
-      } else {
-
-        Character
-          .find({
-            _id: {
-              $in: ids
-            }
-          })
-          .lean()
-          .exec(function (err, characters) {
-            characters.forEach(function (character) {
-              delete character.sourceId;
-              delete character.contributorId;
-            });
-
-            return res.send({
-              total: total,
-              perPage: perPage,
-              objects: characters 
-            });
-
-          });
-      }
-    // no search result
-    } else {
-
-      return res.send({
-        total: total,
-        perPage: perPage,
-        objects: []
-      });
-
-    }
-  });
+  Character
+    .find({
+      name: keywordReg
+    })
+    .lean()
+    .exec(function (err, characters) {
+      return res.send(characters);
+    });
 };
 
 exports.getCharactersBySourceId = function (req, res) {
