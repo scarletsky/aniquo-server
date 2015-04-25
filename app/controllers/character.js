@@ -39,15 +39,8 @@ exports.getCharacters = function (req, res) {
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Character.paginate({}, page, limit, function (err, pageCount, characters, total) {
-
-        var results = {
-            pageCount: pageCount,
-            objects: characters,
-            total: total 
-        }
-
-        return res.send(results);
+    Character.paginate({}, {page: page, limit: limit}, function (err, characters) {
+        return res.send({objects: characters});
     });
 };
 
@@ -144,15 +137,8 @@ exports.getCharactersBySourceId = function (req, res) {
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Character.paginate({sourceId: sourceId}, page, limit, function (err, pageCount, characters, total) {
-
-        var results = {
-            pageCount: pageCount,
-            objects: characters,
-            total: total 
-        }
-
-        return res.send(results);
+    Character.paginate({sourceId: sourceId}, {page: page, limit: limit}, function (err, characters) {
+        return res.send({objects: characters});
     });
 
 };

@@ -5,7 +5,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var mongoosePaginate = require('mongoose-paginate');
+var mongoosePaginate = require('mongoose-paginate-pages');
 
 var QuoteSchema = new Schema({
     characterIds: {type: [ObjectId]},

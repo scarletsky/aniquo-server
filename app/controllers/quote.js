@@ -10,9 +10,9 @@ var perPage = config.perPage;
 
 exports.getQuotes = function (req, res) {
     var page = req.query.page || 1;
-    var size = req.query.perPage || perPage;
+    var limit = req.query.perPage || perPage;
 
-    Quote.paginate({}, page, size, function (err, pageCount, quotes, total) {
+    Quote.paginate({}, {page: page, limit: limit, lean: true}, function (err, quotes) {
 
         async.mapSeries(quotes, function (q, callback) {
 
@@ -32,17 +32,11 @@ exports.getQuotes = function (req, res) {
 
         }, function (err, qs) {
 
-            var results = {
-                pageCount: pageCount,
-                objects: quotes,
-                total: total 
-            }
+            console.log(qs);
 
-            return res.send(results);
+            return res.send({objects: qs});
 
         })
-    }, {
-        lean: true
     });
 
 };
@@ -167,13 +161,13 @@ exports.putQuoteById = function (req, res) {
 exports.getQuotesByCharacterId = function (req, res) {
     var characterId = req.params.characterId;
     var page = req.query.page || 1;
-    var size = req.query.perPage || perPage;
+    var limit = req.query.perPage || perPage;
 
     Quote.paginate({
         characterIds: {
             $in: [characterId]
         }
-    }, page, size, function (err, pageCount, quotes, total) {
+    }, {page: page, limit: limit, lean: true}, function (err, quotes) {
 
         async.mapSeries(quotes, function (q, callback) {
 
@@ -193,17 +187,9 @@ exports.getQuotesByCharacterId = function (req, res) {
 
         }, function (err, qs) {
 
-            var results = {
-                pageCount: pageCount,
-                objects: quotes,
-                total: total 
-            }
-
-            return res.send(results);
+            return res.send({objects: quotes});
 
         })
-    }, {
-        lean: true
     });
 };
 

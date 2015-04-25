@@ -15,15 +15,17 @@ exports.checkSource = function (req, res) {
         alias = Array(alias);
     }
 
+    var query = {
+        $or: [
+            {name: name},
+            {alias: {
+                $in: alias
+            }}
+        ]
+    }
+
     Source
-        .findOne({
-            $or: [
-                {name: name},
-                {alias: {
-                    $in: alias
-                }}
-            ]
-        })
+        .findOne(query)
         .exec(function (err, source) {
             if (source) {
                 return res.send({exist: true});
@@ -37,15 +39,8 @@ exports.getSources = function (req, res) {
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Source.paginate({}, page, limit, function (err, pageCount, sources, total) {
-
-        var results = {
-            pageCount: pageCount,
-            objects: sources,
-            total: total 
-        }
-
-        return res.send(results);
+    Source.paginate({}, {page: page, limit: limit}, function (err, sources) {
+        return res.send({objects: sources});
     });
     
 };
