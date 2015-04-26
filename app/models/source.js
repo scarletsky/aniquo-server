@@ -12,8 +12,13 @@ var SourceSchema = new Schema({
     alias: {type: Array},
     info: {type: String},
     cover: {type: String},
+    likeIds: {type: Array, default: []},
+    likersCount: {type: Number, default: 0},
+    viewsCount: {type: Number, default: 0},
+    charactersCount: {type: Number, default: 0},
+    quotesCount: {type: Number, default: 0},
     contributorId: {type: ObjectId},
-    createdAt: {type: Date, default: Date.now, es_type: 'date'}
+    createdAt: {type: Date, default: Date.now}
 });
 
 SourceSchema.index({name: 1, alias: 1});

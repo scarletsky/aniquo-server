@@ -56,7 +56,16 @@ exports.postCharacter = function (req, res) {
 
     var character = new Character(obj);
     character.save(function (err, character) {
-        return res.send(character);
+
+        Source.findByIdAndUpdate(character.sourceId, {
+            $inc: {
+                charactersCount: 1
+            }
+        }, function (err) {
+
+            return res.send(character);
+
+        });
     });
 };
 
@@ -138,7 +147,18 @@ exports.getCharactersBySourceId = function (req, res) {
     var limit = req.query.perPage || perPage;
 
     Character.paginate({sourceId: sourceId}, {page: page, limit: limit}, function (err, characters) {
-        return res.send({objects: characters});
+
+        Source.update({_id: sourceId}, {
+
+            $inc: {
+                viewsCount: 1
+            }
+
+        }, function (err, source) {
+
+            return res.send({objects: characters});
+
+        });
     });
 
 };

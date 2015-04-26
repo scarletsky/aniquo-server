@@ -22,7 +22,7 @@ exports.checkSource = function (req, res) {
                 $in: alias
             }}
         ]
-    }
+    };
 
     Source
         .findOne(query)
@@ -51,7 +51,8 @@ exports.postSource = function (req, res) {
         alias: req.body.alias,
         info: req.body.info,
         contributorId: req.user._id,
-        cover: req.body.cover
+        cover: req.body.cover,
+        viewsCount: Math.ceil(Math.random() * 10) * Math.ceil(Math.random() * 10)
     };
 
     var source = new Source(obj);
@@ -64,7 +65,11 @@ exports.getSourceById = function (req, res) {
     var sourceId = req.params.sourceId;
 
     Source
-        .findById(sourceId, function (err, source) {
+        .findByIdAndUpdate(sourceId, {
+            $inc: {
+                viewsCount: 1
+            }
+        }, function (err, source) {
             return res.send(source);
         });
 };

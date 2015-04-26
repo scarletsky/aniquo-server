@@ -52,7 +52,20 @@ exports.postQuote = function (req, res) {
 
     var quote = new Quote(obj);
     quote.save(function (err, quote) {
-        return res.send(quote);
+
+        Character.findById(obj.characterIds[0], function (err, character) {
+
+            Source.findByIdAndUpdate(character.sourceId, {
+                $inc: {
+                    quotesCount: 1
+                }
+            }, function (err) {
+
+                return res.send(quote);
+
+            });
+
+        });
     });
 };
 
