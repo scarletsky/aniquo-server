@@ -1,4 +1,4 @@
-# Lenneth Project
+# Aniquo Project At Server
 
 ### 简介
 
@@ -12,17 +12,10 @@
 ### 使用方法
 
 ```bash
-$ npm install -g supervisor
-$ cd Lenneth
+$ npm install -g nodemon
 $ npm install
 
-$ nohup elasticsearch &
-$ supervisor node app
+$ nodemon app.js
 ```
 
 ### 欢迎 Pull Requests & Issues.
-
-### 支持我
-如果你觉得这个项目不错的话，可以通过支付宝支持我~
-
-![](http://ww3.sinaimg.cn/large/6dd4f17bgw1elbvvjqwlsj2074074jrx.jpg)
