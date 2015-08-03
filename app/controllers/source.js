@@ -1,5 +1,6 @@
 var Source = require('../models').Source;
 var Quote = require('../models').Quote;
+var User = require('../models').User;
 var utils = require('./utils');
 var async = require('async');
 
@@ -42,7 +43,7 @@ exports.getSources = function (req, res) {
     Source.paginate({}, {page: page, limit: limit}, function (err, sources) {
         return res.send({objects: sources});
     });
-    
+
 };
 
 exports.postSource = function (req, res) {
@@ -64,14 +65,33 @@ exports.postSource = function (req, res) {
 exports.getSourceById = function (req, res) {
     var sourceId = req.params.sourceId;
 
-    Source
-        .findByIdAndUpdate(sourceId, {
-            $inc: {
-                viewsCount: 1
-            }
-        }, function (err, source) {
-            return res.send(source);
-        });
+    async.waterfall([
+        function (callback) {
+            Source
+                .findByIdAndUpdate(sourceId, {
+                    $inc: {
+                        viewsCount: 1
+                    }
+                })
+                .lean()
+                .exec(function (err, source) {
+
+                    callback(null, source);
+                });
+        },
+        function (source, callback) {
+            User
+                .findById(source.contributorId)
+                .lean()
+                .exec(function (err, user) {
+                    callback(null, source, user);
+                });
+        }
+    ], function (err, source, user) {
+        delete source.contributorId;
+        source.contributor = user;
+        return res.send(source);
+    });
 };
 
 exports.putSourceById = function (req, res) {

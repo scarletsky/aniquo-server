@@ -86,7 +86,7 @@ exports.getQuoteById = function (req, res) {
 
     var withCharacter = req.query.with_character;
     var withCharacterAll = req.query.with_character_all;
-    var withContributor = req.query.with_contributor; 
+    var withContributor = req.query.with_contributor;
 
     if (withCharacterAll || withContributor) {
         async.waterfall([
@@ -111,8 +111,8 @@ exports.getQuoteById = function (req, res) {
                             }
                         })
                         .exec(function (err, characters) {
-                            callback(null, quote, characters)
-                        })
+                            callback(null, quote, characters);
+                        });
                 } else {
                     callback(null, quote, null);
                 }

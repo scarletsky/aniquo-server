@@ -1,5 +1,6 @@
 var Character = require('../models').Character;
 var Source = require('../models').Source;
+var User = require('../models').User;
 var utils = require('./utils');
 var async = require('async');
 
@@ -89,11 +90,20 @@ exports.getCharacterById = function (req, res) {
                     .exec(function (err, source) {
                         callback(null, character, source);
                     });
+            },
+            function (character, source, callback) {
+                User
+                    .findById(character.contributorId)
+                    .lean()
+                    .exec(function (err, user) {
+                        callback(null, character, source, user);
+                    });
             }
-        ], function (err, character, source) {
+        ], function (err, character, source, user) {
             delete character.sourceId;
             delete character.contributorId;
             character.source = source;
+            character.contributor = user;
             return res.send(character);
         });
     } else {
