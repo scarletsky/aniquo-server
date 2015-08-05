@@ -17,7 +17,8 @@
     "mongoose": "^4.1.0",
     "mongoose-paginate-pages": "^1.0.0",
     "morgan": "^1.5.2",
-    "qn": "~1.0.1"
+    "qn": "~1.0.1",
+    "request": "^2.60.0"
   },
   "devDependencies": {
     "shelljs": "^0.3.0"

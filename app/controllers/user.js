@@ -1,5 +1,25 @@
 var User = require('../models').User;
 
+// as middlewares
+exports.checkUser = function (req, res, next) {
+    var username = req.body.username;
+
+    User
+        .findOne({username: username})
+        .lean()
+        .exec(function (err, user) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+
+            if (user) {
+                return res.status(403).send({error: '用户已存在'});
+            }
+
+            next();
+        });
+};
+
 exports.getUserByToken = function (req, res) {
     var userId = req.user._id;
 

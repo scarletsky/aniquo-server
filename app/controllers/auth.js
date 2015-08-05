@@ -3,7 +3,7 @@ var jwt = require('jsonwebtoken');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 
-exports.authenticate = function (req, res) {
+exports.login = function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
 
@@ -36,7 +36,7 @@ exports.authenticate = function (req, res) {
         });
 };
 
-exports.register = function (req, res) {
+exports.signup = function (req, res) {
     var username = req.param('username');
     var password = req.param('password');
 

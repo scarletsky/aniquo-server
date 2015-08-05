@@ -8,6 +8,7 @@ var upload = require('../app/controllers/upload');
 var expressJwt = require('express-jwt');
 var customJwt = require('./middlewares/customJwt');
 var access = require('./middlewares/access');
+var incode = require('./middlewares/incode');
 
 module.exports = function (app, config) {
     var apiPrefix = '/api';
@@ -16,8 +17,8 @@ module.exports = function (app, config) {
     };
 
     // auth
-    app.post(apiPrefix + '/authenticate', auth.authenticate);
-    app.post(apiPrefix + '/register', auth.register);
+    app.post(apiPrefix + '/login', auth.login);
+    app.post(apiPrefix + '/signup', user.checkUser, incode, auth.signup);
 
     // users
     app.get(apiPrefix + '/user', expressJwt(jwtOptions), user.getUserByToken);
@@ -55,4 +56,3 @@ module.exports = function (app, config) {
     // upload
     app.get(apiPrefix + '/upload/token', expressJwt(jwtOptions), upload.getUploadToken);
 };
-
