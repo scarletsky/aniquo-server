@@ -1,6 +1,7 @@
 node_modules/
 app/components/
 config/config.js
+config/mailtpl.js
 data/
 images/
 data.js
