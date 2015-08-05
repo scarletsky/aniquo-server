@@ -4,12 +4,12 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 
 exports.login = function (req, res) {
-    var username = req.body.username;
+    var email = req.body.email;
     var password = req.body.password;
 
     User
         .findOne({
-            username: username
+            email: email
         })
         .exec(function (err, user) {
             if (!user) {
@@ -20,7 +20,7 @@ exports.login = function (req, res) {
                 user = user.toObject();
                 user = {
                     _id: user._id,
-                    username: user.username
+                    email: user.email
                 };
                 var token = jwt.sign(user, config.sessionSecret, {
                     expiresInMinutes: 60*5
@@ -37,12 +37,12 @@ exports.login = function (req, res) {
 };
 
 exports.signup = function (req, res) {
-    var username = req.param('username');
+    var email = req.param('email');
     var password = req.param('password');
 
     User
         .findOne({
-            username: username
+            email: email
         })
         .exec(function (err, user) {
             if (user) {
@@ -50,7 +50,7 @@ exports.signup = function (req, res) {
             }
 
             user = new User({
-                username: username,
+                email: email,
                 password: password
             });
 

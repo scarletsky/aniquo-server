@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
+    email: {type: String, required: true},
     username: {type: String, default: ''},
     passwordHash: {type: String, default: ''},
     nickname: {type: String, default: ''},
@@ -15,6 +16,7 @@ var UserSchema = new Schema({
     info: {type: String, default: ''},
     contributeCount: {type: Number, default: 0},
     createdAt: {type: Date, default: Date.now},
+    activated: {type: Boolean, default: false}
 });
 
 UserSchema
@@ -31,6 +33,6 @@ UserSchema.methods = {
     }
 };
 
-UserSchema.index({username: 1});
+UserSchema.index({email: 1});
 
 mongoose.model('User', UserSchema);

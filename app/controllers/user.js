@@ -2,10 +2,10 @@ var User = require('../models').User;
 
 // as middlewares
 exports.checkUser = function (req, res, next) {
-    var username = req.body.username;
+    var email = req.body.email;
 
     User
-        .findOne({username: username})
+        .findOne({email: email})
         .lean()
         .exec(function (err, user) {
             if (err) {
