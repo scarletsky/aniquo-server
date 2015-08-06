@@ -1,9 +1,17 @@
+var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var env = process.env.NODE_ENV || 'development';
-var mail = require('../../config/config')[env].mail;
+var config = require('../../config/config')[env];
+var mail = config.mail;
 var mailtpl = require('../../config/mailtpl');
 
-exports.sendVerifyEmail = function (toEmail, verifyLink, callback) {
+function genVerifyLink(userId) {
+    var md5 = crypto.createHash('md5');
+    var sign = md5.update(config.sessionSecret + userId).digest('hex');
+    return config.web + '/users/' + userId + '/verify?confirm_token=' + sign;
+}
+
+exports.sendVerifyEmail = function (toEmail, userId, callback) {
 
     var transporter = nodemailer.createTransport({
         service: mail.service,
@@ -13,6 +21,8 @@ exports.sendVerifyEmail = function (toEmail, verifyLink, callback) {
         }
     });
 
+    var verifyLink = genVerifyLink(userId);
+
     var mailOptions = {
         from: mailtpl.from,
         to: toEmail,
@@ -21,5 +31,4 @@ exports.sendVerifyEmail = function (toEmail, verifyLink, callback) {
     };
 
     transporter.sendMail(mailOptions, callback);
-
-}
+};

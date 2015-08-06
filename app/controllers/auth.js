@@ -1,7 +1,22 @@
+var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 var User = require('../models').User;
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
+var mail = require('../utils/mail');
+
+function genLoginToken (user) {
+    _user = {
+        _id: user._id,
+        email: user.email
+    };
+
+    var token = jwt.sign(user, config.sessionSecret, {
+        expiresInMinutes: 60*5
+    });
+
+    return token;
+}
 
 exports.login = function (req, res) {
     var email = req.body.email;
@@ -18,13 +33,8 @@ exports.login = function (req, res) {
 
             if (user.auth(password)) {
                 user = user.toObject();
-                user = {
-                    _id: user._id,
-                    email: user.email
-                };
-                var token = jwt.sign(user, config.sessionSecret, {
-                    expiresInMinutes: 60*5
-                });
+                delete user.passwordHash;
+                var token = genLoginToken(user);
 
                 return res.status(200).send({
                     user: user,
@@ -37,8 +47,8 @@ exports.login = function (req, res) {
 };
 
 exports.signup = function (req, res) {
-    var email = req.param('email');
-    var password = req.param('password');
+    var email = req.body.email;
+    var password = req.body.password;
 
     User
         .findOne({
@@ -55,16 +65,66 @@ exports.signup = function (req, res) {
             });
 
             user.save(function (err, user) {
-                user = user.toObject();
-                delete user.passwordHash;
-                var token = jwt.sign(user, config.sessionSecret, {
-                    expiresInMinutes: 60*5
-                });
 
-                return res.status(200).send({
-                    user: user,
-                    token: token
+                mail.sendVerifyEmail(email, user._id, function (err, _res) {
+
+                    user = user.toObject();
+                    delete user.passwordHash;
+                    var token = genLoginToken(user);
+
+                    return res.status(200).send({
+                        user: user,
+                        token: token
+                    });
                 });
             });
         });
+};
+
+exports.verify = function (req, res) {
+    var userId = req.params.userId;
+    var token = req.query.confirm_token;
+
+    console.log(userId);
+    console.log(token);
+
+    var md5 = crypto.createHash('md5');
+    var testToken = md5.update(config.sessionSecret + userId).digest('hex');
+    if (token === testToken) {
+
+        User
+            .findById(userId)
+            .exec(function (err, user) {
+
+                if (user.activated === true) {
+
+                    user = user.toObject();
+                    delete user.passwordHash;
+                    var token = genLoginToken(user);
+
+                    return res.status(403).send({
+                        user: user,
+                        token: token,
+                        error: '你的帐号已经激活，不需要重复激活帐号'
+                    });
+                }
+
+                user.activated = true;
+                user.save(function (err, user) {
+
+                    user = user.toObject();
+                    delete user.passwordHash;
+                    var token = genLoginToken(user);
+
+                    return res.status(200).send({
+                        user: user,
+                        token: token
+                    });
+
+                });
+            });
+
+    } else {
+        return res.status(403).send({error: '帐号验证失败'});
+    }
 };

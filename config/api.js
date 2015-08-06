@@ -19,6 +19,7 @@ module.exports = function (app, config) {
     // auth
     app.post(apiPrefix + '/login', auth.login);
     app.post(apiPrefix + '/signup', user.checkUser, incode, auth.signup);
+    app.get(apiPrefix + '/users/:userId/verify', auth.verify);
 
     // users
     app.get(apiPrefix + '/user', expressJwt(jwtOptions), user.getUserByToken);
