@@ -1,3 +1,4 @@
+var Source = require('../models').Source;
 var Quote = require('../models').Quote;
 var Character = require('../models').Character;
 var User = require('../models').User;
