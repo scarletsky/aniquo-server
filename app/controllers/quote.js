@@ -37,8 +37,6 @@ exports.getQuotes = function(req, res) {
 
         }, function(err, qs) {
 
-            console.log(qs);
-
             return res.send({
                 objects: qs
             });
