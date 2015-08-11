@@ -47,7 +47,12 @@ exports.getSources = function(req, res) {
 
     Source.paginate({}, {
         page: page,
-        limit: limit
+        limit: limit,
+        sortBy: {
+            viewsCount: -1,
+            charactersCount: -1,
+            quotesCount: -1
+        }
     }, function(err, sources) {
         return res.send({
             objects: sources
