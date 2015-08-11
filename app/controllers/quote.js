@@ -103,7 +103,7 @@ exports.getQuoteById = function(req, res) {
                 Quote
                     .findByIdAndUpdate(quoteId, {
                         $inc: {
-                            viewCount: 1
+                            viewsCount: 1
                         }
                     })
                     .lean()
@@ -158,7 +158,7 @@ exports.getQuoteById = function(req, res) {
         Quote
             .findByIdAndUpdate(quoteId, {
                 $inc: {
-                    viewCount: 1
+                    viewsCount: 1
                 }
             }, function(err, quote) {
 
@@ -235,7 +235,7 @@ exports.putQuoteLikerIdById = function(req, res) {
 
             if (quote.likerIds.indexOf(userId) === -1) {
                 quote.likerIds.unshift(userId);
-                quote.likeCount++;
+                quote.likersCount++;
                 quote.save(function(err, quote) {
                     quote = utils.setLikedField(quote, userId);
                     return res.send(quote);
@@ -258,7 +258,7 @@ exports.deleteQuoteLikerIdById = function(req, res) {
 
             if (quote.likerIds.indexOf(userId) !== -1) {
                 quote.likerIds.pull(userId);
-                quote.likeCount--;
+                quote.likersCount--;
                 quote.save(function(err, quote) {
                     quote = utils.setLikedField(quote, userId);
                     return res.send(quote);
