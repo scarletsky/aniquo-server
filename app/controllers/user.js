@@ -1,54 +1,58 @@
 var User = require('../models').User;
 
 // as middlewares
-exports.checkUser = function (req, res, next) {
+exports.checkUser = function(req, res, next) {
     var email = req.body.email;
 
     User
-        .findOne({email: email})
+        .findOne({
+            email: email
+        })
         .lean()
-        .exec(function (err, user) {
+        .exec(function(err, user) {
             if (err) {
                 return res.sendStatus(500);
             }
 
             if (user) {
-                return res.status(403).send({error: '用户已存在'});
+                return res.status(403).send({
+                    error: '用户已存在'
+                });
             }
 
             next();
         });
 };
 
-exports.getUserByToken = function (req, res) {
+exports.getUserByToken = function(req, res) {
     var userId = req.user._id;
 
     User
         .findById(userId, '-passwordHash')
-        .exec(function (err, user) {
+        .exec(function(err, user) {
             return res.send(user);
         });
 };
 
-exports.getUsers = function (req, res) {
+exports.getUsers = function(req, res) {
     User
         .find()
         .limit(20)
-        .exec(function (err, users) {
+        .exec(function(err, users) {
             return res.send(users);
         });
 };
 
-exports.getUserById = function (req, res) {
+exports.getUserById = function(req, res) {
     var userId = req.params.userId;
 
     User
-        .findById(userId, function (err, user) {
+        .findById(userId, function(err, user) {
             return res.send(user);
         });
 };
 
-exports.getUsersByKeyword = function (req, res) {
+exports.getUsersByKeyword = function(req, res) {
     var keyword = req.query.kw;
     var regexpKeyword = new RegExp('.*' + keyword + '.*');
 
@@ -56,12 +60,12 @@ exports.getUsersByKeyword = function (req, res) {
         .find({
             username: regexpKeyword
         })
-        .exec(function (err, users) {
+        .exec(function(err, users) {
             return res.send(users);
         });
 };
 
-exports.putUser = function (req, res) {
+exports.putUser = function(req, res) {
     var userId = req.user._id;
     var isChangePassword = req.body.oldPassword && req.body.newPassword ? true : false;
 
@@ -79,7 +83,7 @@ exports.putUser = function (req, res) {
         }
 
         User
-            .findByIdAndUpdate(userId, data, function (err, user) {
+            .findByIdAndUpdate(userId, data, function(err, user) {
                 return res.send(user);
             });
 
@@ -89,12 +93,14 @@ exports.putUser = function (req, res) {
 
         User
             .findById(userId)
-            .exec(function (err, user) {
+            .exec(function(err, user) {
                 if (!user.auth(oldPassword)) {
-                    return res.status(403).send({error: '密码错误'});
+                    return res.status(403).send({
+                        error: '密码错误'
+                    });
                 } else {
                     user.password = newPassword;
-                    user.save(function (err, user) {
+                    user.save(function(err, user) {
                         user = user.toObject();
                         delete user.passwordHash;
                         return res.status(200).send(user);

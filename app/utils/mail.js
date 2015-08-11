@@ -11,7 +11,7 @@ function genVerifyLink(userId) {
     return config.web + '/users/' + userId + '/verify?confirm_token=' + sign;
 }
 
-exports.sendVerifyEmail = function (toEmail, userId, callback) {
+exports.sendVerifyEmail = function(toEmail, userId, callback) {
 
     var transporter = nodemailer.createTransport({
         service: mail.service,

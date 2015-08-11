@@ -1,4 +1,4 @@
-exports.setLikedField = function (document, userId) {
+exports.setLikedField = function(document, userId) {
     var isLiked;
 
     if (typeof document.toObject === 'function') {

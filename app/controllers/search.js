@@ -3,7 +3,7 @@ var source = require('./source');
 var character = require('./character');
 var quote = require('./quote');
 
-exports.search = function (req, res) {
+exports.search = function(req, res) {
     var type = req.query.t || 'all';
     /**
      * from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions

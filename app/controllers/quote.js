@@ -9,13 +9,17 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var perPage = config.perPage;
 
-exports.getQuotes = function (req, res) {
+exports.getQuotes = function(req, res) {
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Quote.paginate({}, {page: page, limit: limit, lean: true}, function (err, quotes) {
+    Quote.paginate({}, {
+        page: page,
+        limit: limit,
+        lean: true
+    }, function(err, quotes) {
 
-        async.mapSeries(quotes, function (q, callback) {
+        async.mapSeries(quotes, function(q, callback) {
 
             Character
                 .find({
@@ -23,7 +27,7 @@ exports.getQuotes = function (req, res) {
                         $in: q.characterIds
                     }
                 })
-                .exec(function (err, characters) {
+                .exec(function(err, characters) {
 
                     q.characters = characters;
                     delete q.characterIds;
@@ -31,18 +35,20 @@ exports.getQuotes = function (req, res) {
 
                 });
 
-        }, function (err, qs) {
+        }, function(err, qs) {
 
             console.log(qs);
 
-            return res.send({objects: qs});
+            return res.send({
+                objects: qs
+            });
 
         })
     });
 
 };
 
-exports.postQuote = function (req, res) {
+exports.postQuote = function(req, res) {
     var obj = {
         characterIds: req.body.characterIds,
         quote: req.body.quote,
@@ -52,15 +58,15 @@ exports.postQuote = function (req, res) {
     };
 
     var quote = new Quote(obj);
-    quote.save(function (err, quote) {
+    quote.save(function(err, quote) {
 
-        Character.findById(obj.characterIds[0], function (err, character) {
+        Character.findById(obj.characterIds[0], function(err, character) {
 
             Source.findByIdAndUpdate(character.sourceId, {
                 $inc: {
                     quotesCount: 1
                 }
-            }, function (err) {
+            }, function(err) {
 
                 return res.send(quote);
 
@@ -70,18 +76,20 @@ exports.postQuote = function (req, res) {
     });
 };
 
-exports.getQuoteByKeyword = function (req, res) {
+exports.getQuoteByKeyword = function(req, res) {
     var keyword = req.query.kw;
 
     Quote
-        .find({quote: new RegExp('(.*)' + keyword + '(.*)')})
+        .find({
+            quote: new RegExp('(.*)' + keyword + '(.*)')
+        })
         .limit(20)
-        .exec(function (err, quotes) {
+        .exec(function(err, quotes) {
             return res.send(quotes);
         });
 };
 
-exports.getQuoteById = function (req, res) {
+exports.getQuoteById = function(req, res) {
     var userId = req.user ? req.user._id : undefined;
     var quoteId = req.params.quoteId;
 
@@ -91,7 +99,7 @@ exports.getQuoteById = function (req, res) {
 
     if (withCharacterAll || withContributor) {
         async.waterfall([
-            function (callback) {
+            function(callback) {
                 Quote
                     .findByIdAndUpdate(quoteId, {
                         $inc: {
@@ -99,11 +107,11 @@ exports.getQuoteById = function (req, res) {
                         }
                     })
                     .lean()
-                    .exec(function (err, quote) {
+                    .exec(function(err, quote) {
                         callback(null, quote);
                     });
             },
-            function (quote, callback) {
+            function(quote, callback) {
                 if (withCharacterAll) {
                     Character
                         .find({
@@ -111,26 +119,26 @@ exports.getQuoteById = function (req, res) {
                                 $in: quote.characterIds
                             }
                         })
-                        .exec(function (err, characters) {
+                        .exec(function(err, characters) {
                             callback(null, quote, characters);
                         });
                 } else {
                     callback(null, quote, null);
                 }
             },
-            function (quote, characters, callback) {
+            function(quote, characters, callback) {
                 if (withContributor) {
                     User
                         .findById(quote.contributorId, '-passwordHash')
                         .lean()
-                        .exec(function (err, contributor) {
+                        .exec(function(err, contributor) {
                             callback(null, quote, characters, contributor);
                         });
                 } else {
                     callback(null, quote, characters, null);
                 }
             }
-        ], function (err, quote, characters, contributor) {
+        ], function(err, quote, characters, contributor) {
             delete quote.characterIds;
             delete quote.contributorId;
 
@@ -148,7 +156,11 @@ exports.getQuoteById = function (req, res) {
         });
     } else {
         Quote
-            .findByIdAndUpdate(quoteId, {$inc: {viewCount: 1}}, function (err, quote) {
+            .findByIdAndUpdate(quoteId, {
+                $inc: {
+                    viewCount: 1
+                }
+            }, function(err, quote) {
 
                 quote = utils.setLikedField(quote, userId);
 
@@ -157,8 +169,8 @@ exports.getQuoteById = function (req, res) {
     }
 };
 
-exports.putQuoteById = function (req, res) {
-    var quoteId =req.params.quoteId;
+exports.putQuoteById = function(req, res) {
+    var quoteId = req.params.quoteId;
     var obj = {
         characterIds: req.body.characterIds,
         quote: req.body.quote,
@@ -167,12 +179,12 @@ exports.putQuoteById = function (req, res) {
     };
 
     Quote
-        .findByIdAndUpdate(quoteId, obj, function (err, quote) {
+        .findByIdAndUpdate(quoteId, obj, function(err, quote) {
             return res.send(quote);
         });
 };
 
-exports.getQuotesByCharacterId = function (req, res) {
+exports.getQuotesByCharacterId = function(req, res) {
     var characterId = req.params.characterId;
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
@@ -181,9 +193,13 @@ exports.getQuotesByCharacterId = function (req, res) {
         characterIds: {
             $in: [characterId]
         }
-    }, {page: page, limit: limit, lean: true}, function (err, quotes) {
+    }, {
+        page: page,
+        limit: limit,
+        lean: true
+    }, function(err, quotes) {
 
-        async.mapSeries(quotes, function (q, callback) {
+        async.mapSeries(quotes, function(q, callback) {
 
             Character
                 .find({
@@ -191,7 +207,7 @@ exports.getQuotesByCharacterId = function (req, res) {
                         $in: q.characterIds
                     }
                 })
-                .exec(function (err, characters) {
+                .exec(function(err, characters) {
 
                     q.characters = characters;
                     delete q.characterIds;
@@ -199,26 +215,28 @@ exports.getQuotesByCharacterId = function (req, res) {
 
                 });
 
-        }, function (err, qs) {
+        }, function(err, qs) {
 
-            return res.send({objects: quotes});
+            return res.send({
+                objects: quotes
+            });
 
         })
     });
 };
 
-exports.putQuoteLikerIdById = function (req, res) {
+exports.putQuoteLikerIdById = function(req, res) {
     var userId = req.user._id;
     var quoteId = req.params.quoteId;
 
     Quote
         .findById(quoteId)
-        .exec(function (err, quote) {
+        .exec(function(err, quote) {
 
             if (quote.likerIds.indexOf(userId) === -1) {
                 quote.likerIds.unshift(userId);
                 quote.likeCount++;
-                quote.save(function (err, quote) {
+                quote.save(function(err, quote) {
                     quote = utils.setLikedField(quote, userId);
                     return res.send(quote);
                 });
@@ -230,18 +248,18 @@ exports.putQuoteLikerIdById = function (req, res) {
         });
 };
 
-exports.deleteQuoteLikerIdById = function (req, res) {
+exports.deleteQuoteLikerIdById = function(req, res) {
     var userId = req.user._id;
     var quoteId = req.params.quoteId;
 
     Quote
         .findById(quoteId)
-        .exec(function (err, quote) {
+        .exec(function(err, quote) {
 
             if (quote.likerIds.indexOf(userId) !== -1) {
                 quote.likerIds.pull(userId);
                 quote.likeCount--;
-                quote.save(function (err, quote) {
+                quote.save(function(err, quote) {
                     quote = utils.setLikedField(quote, userId);
                     return res.send(quote);
                 });

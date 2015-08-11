@@ -6,7 +6,7 @@ var compression = require('compression');
 var errorhandler = require('errorhandler');
 var access = require('./middlewares/access');
 
-module.exports = function (app, config) {
+module.exports = function(app, config) {
     app.set('port', process.env.PORT || 3000);
     app.use(access.allowCORS);
     app.use(morgan('dev'));

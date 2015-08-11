@@ -10,7 +10,7 @@ var customJwt = require('./middlewares/customJwt');
 var access = require('./middlewares/access');
 var incode = require('./middlewares/incode');
 
-module.exports = function (app, config) {
+module.exports = function(app, config) {
     var apiPrefix = '/api';
     var jwtOptions = {
         secret: config.sessionSecret

@@ -8,7 +8,7 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var perPage = config.perPage;
 
-exports.checkSource = function (req, res) {
+exports.checkSource = function(req, res) {
     var name = req.query.name;
     var alias = req.query.alias || [''];
 
@@ -17,36 +17,46 @@ exports.checkSource = function (req, res) {
     }
 
     var query = {
-        $or: [
-            {name: name},
-            {alias: {
+        $or: [{
+            name: name
+        }, {
+            alias: {
                 $in: alias
-            }}
-        ]
+            }
+        }]
     };
 
     Source
         .findOne(query)
-        .exec(function (err, source) {
+        .exec(function(err, source) {
             if (source) {
-                return res.send({exist: true});
+                return res.send({
+                    exist: true
+                });
             } else {
-                return res.send({exist: false});
+                return res.send({
+                    exist: false
+                });
             }
         });
 };
 
-exports.getSources = function (req, res) {
+exports.getSources = function(req, res) {
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Source.paginate({}, {page: page, limit: limit}, function (err, sources) {
-        return res.send({objects: sources});
+    Source.paginate({}, {
+        page: page,
+        limit: limit
+    }, function(err, sources) {
+        return res.send({
+            objects: sources
+        });
     });
 
 };
 
-exports.postSource = function (req, res) {
+exports.postSource = function(req, res) {
     var obj = {
         name: req.body.name,
         alias: req.body.alias,
@@ -57,16 +67,16 @@ exports.postSource = function (req, res) {
     };
 
     var source = new Source(obj);
-    source.save(function (err, source) {
+    source.save(function(err, source) {
         return res.send(source);
     });
 };
 
-exports.getSourceById = function (req, res) {
+exports.getSourceById = function(req, res) {
     var sourceId = req.params.sourceId;
 
     async.waterfall([
-        function (callback) {
+        function(callback) {
             Source
                 .findByIdAndUpdate(sourceId, {
                     $inc: {
@@ -74,27 +84,27 @@ exports.getSourceById = function (req, res) {
                     }
                 })
                 .lean()
-                .exec(function (err, source) {
+                .exec(function(err, source) {
 
                     callback(null, source);
                 });
         },
-        function (source, callback) {
+        function(source, callback) {
             User
                 .findById(source.contributorId)
                 .lean()
-                .exec(function (err, user) {
+                .exec(function(err, user) {
                     callback(null, source, user);
                 });
         }
-    ], function (err, source, user) {
+    ], function(err, source, user) {
         delete source.contributorId;
         source.contributor = user;
         return res.send(source);
     });
 };
 
-exports.putSourceById = function (req, res) {
+exports.putSourceById = function(req, res) {
     var sourceId = req.params.sourceId;
     var obj = {
         name: req.body.name,
@@ -104,12 +114,12 @@ exports.putSourceById = function (req, res) {
     };
 
     Source
-        .findByIdAndUpdate(sourceId, obj, function (err, source) {
+        .findByIdAndUpdate(sourceId, obj, function(err, source) {
             return res.send(source);
         });
 };
 
-exports.getSourcesByKeyword = function (req, res) {
+exports.getSourcesByKeyword = function(req, res) {
     var keyword = req.query.kw;
     var page = req.query.page || 1;
     var size = req.query.perPage || perPage;
@@ -121,7 +131,7 @@ exports.getSourcesByKeyword = function (req, res) {
             name: keywordReg
         })
         .lean()
-        .exec(function (err, sources) {
+        .exec(function(err, sources) {
             return res.send(sources);
         });
 };

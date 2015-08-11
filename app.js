@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 var env = process.env.NODE_ENV || 'development';
 var config = require('./config/config')[env];
 
-var connect = function () {
+var connect = function() {
     var options = {
         server: {
             socketOptions: {
@@ -22,11 +22,11 @@ var connect = function () {
 };
 connect();
 
-mongoose.connection.on('error', function (err) {
+mongoose.connection.on('error', function(err) {
     console.log(err);
 });
 
-mongoose.connection.on('disconnected', function () {
+mongoose.connection.on('disconnected', function() {
     console.log('mongodb had disconnected. trying to reconnect now.');
     connect();
 });

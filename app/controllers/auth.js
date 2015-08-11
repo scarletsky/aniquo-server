@@ -5,20 +5,20 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var mail = require('../utils/mail');
 
-function genLoginToken (user) {
+function genLoginToken(user) {
     _user = {
         _id: user._id,
         email: user.email
     };
 
     var token = jwt.sign(user, config.sessionSecret, {
-        expiresInMinutes: 60*5
+        expiresInMinutes: 60 * 5
     });
 
     return token;
 }
 
-exports.login = function (req, res) {
+exports.login = function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
@@ -26,9 +26,11 @@ exports.login = function (req, res) {
         .findOne({
             email: email
         })
-        .exec(function (err, user) {
+        .exec(function(err, user) {
             if (!user) {
-                return res.status(403).send({error: '用户不存在'});
+                return res.status(403).send({
+                    error: '用户不存在'
+                });
             }
 
             if (user.auth(password)) {
@@ -41,12 +43,14 @@ exports.login = function (req, res) {
                     token: token
                 });
             } else {
-                return res.status(403).send({error: '用户名或密码错误'});
+                return res.status(403).send({
+                    error: '用户名或密码错误'
+                });
             }
         });
 };
 
-exports.signup = function (req, res) {
+exports.signup = function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
@@ -54,9 +58,11 @@ exports.signup = function (req, res) {
         .findOne({
             email: email
         })
-        .exec(function (err, user) {
+        .exec(function(err, user) {
             if (user) {
-                return res.status(403).send({error: '该用户已存在'});
+                return res.status(403).send({
+                    error: '该用户已存在'
+                });
             }
 
             user = new User({
@@ -64,9 +70,9 @@ exports.signup = function (req, res) {
                 password: password
             });
 
-            user.save(function (err, user) {
+            user.save(function(err, user) {
 
-                mail.sendVerifyEmail(email, user._id, function (err, _res) {
+                mail.sendVerifyEmail(email, user._id, function(err, _res) {
 
                     user = user.toObject();
                     delete user.passwordHash;
@@ -81,7 +87,7 @@ exports.signup = function (req, res) {
         });
 };
 
-exports.verify = function (req, res) {
+exports.verify = function(req, res) {
     var userId = req.params.userId;
     var token = req.query.confirm_token;
 
@@ -94,7 +100,7 @@ exports.verify = function (req, res) {
 
         User
             .findById(userId)
-            .exec(function (err, user) {
+            .exec(function(err, user) {
 
                 if (user.activated === true) {
 
@@ -110,7 +116,7 @@ exports.verify = function (req, res) {
                 }
 
                 user.activated = true;
-                user.save(function (err, user) {
+                user.save(function(err, user) {
 
                     user = user.toObject();
                     delete user.passwordHash;
@@ -125,6 +131,8 @@ exports.verify = function (req, res) {
             });
 
     } else {
-        return res.status(403).send({error: '帐号验证失败'});
+        return res.status(403).send({
+            error: '帐号验证失败'
+        });
     }
 };

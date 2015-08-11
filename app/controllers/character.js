@@ -8,7 +8,7 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var perPage = config.perPage;
 
-exports.checkCharacter = function (req, res) {
+exports.checkCharacter = function(req, res) {
     var name = req.query.name;
     var alias = req.query.alias || [''];
     var sourceId = req.query.sourceId;
@@ -20,32 +20,42 @@ exports.checkCharacter = function (req, res) {
     Character
         .findOne({
             sourceId: sourceId,
-            $or: [
-                {name: name},
-                {alias: {
+            $or: [{
+                name: name
+            }, {
+                alias: {
                     $in: alias
-                }}
-            ]
+                }
+            }]
         })
-        .exec(function (err, character) {
+        .exec(function(err, character) {
             if (character) {
-                return res.send({exist: true});
+                return res.send({
+                    exist: true
+                });
             } else {
-                return res.send({exist: false});
+                return res.send({
+                    exist: false
+                });
             }
         });
 };
 
-exports.getCharacters = function (req, res) {
+exports.getCharacters = function(req, res) {
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Character.paginate({}, {page: page, limit: limit}, function (err, characters) {
-        return res.send({objects: characters});
+    Character.paginate({}, {
+        page: page,
+        limit: limit
+    }, function(err, characters) {
+        return res.send({
+            objects: characters
+        });
     });
 };
 
-exports.postCharacter = function (req, res) {
+exports.postCharacter = function(req, res) {
     var obj = {
         name: req.body.name,
         alias: req.body.alias,
@@ -56,13 +66,13 @@ exports.postCharacter = function (req, res) {
     };
 
     var character = new Character(obj);
-    character.save(function (err, character) {
+    character.save(function(err, character) {
 
         Source.findByIdAndUpdate(character.sourceId, {
             $inc: {
                 charactersCount: 1
             }
-        }, function (err) {
+        }, function(err) {
 
             return res.send(character);
 
@@ -70,36 +80,36 @@ exports.postCharacter = function (req, res) {
     });
 };
 
-exports.getCharacterById = function (req, res) {
+exports.getCharacterById = function(req, res) {
     var characterId = req.params.characterId;
 
     if (req.query.with_source) {
         async.waterfall([
-            function (callback) {
+            function(callback) {
                 Character
                     .findById(characterId)
                     .lean()
-                    .exec(function (err, character) {
+                    .exec(function(err, character) {
                         callback(null, character);
                     });
             },
-            function (character, callback) {
+            function(character, callback) {
                 Source
                     .findById(character.sourceId)
                     .lean()
-                    .exec(function (err, source) {
+                    .exec(function(err, source) {
                         callback(null, character, source);
                     });
             },
-            function (character, source, callback) {
+            function(character, source, callback) {
                 User
                     .findById(character.contributorId)
                     .lean()
-                    .exec(function (err, user) {
+                    .exec(function(err, user) {
                         callback(null, character, source, user);
                     });
             }
-        ], function (err, character, source, user) {
+        ], function(err, character, source, user) {
             delete character.sourceId;
             delete character.contributorId;
             character.source = source;
@@ -110,7 +120,7 @@ exports.getCharacterById = function (req, res) {
         Character
             .findById(characterId)
             .lean()
-            .exec(function (err, character) {
+            .exec(function(err, character) {
                 delete character.sourceId;
                 delete character.contributorId;
                 return res.send(character);
@@ -118,7 +128,7 @@ exports.getCharacterById = function (req, res) {
     }
 };
 
-exports.putCharacterById = function (req, res) {
+exports.putCharacterById = function(req, res) {
     var characterId = req.params.characterId;
     var obj = {
         name: req.body.name,
@@ -129,12 +139,12 @@ exports.putCharacterById = function (req, res) {
     };
 
     Character
-        .findByIdAndUpdate(characterId, obj, function (err, character) {
+        .findByIdAndUpdate(characterId, obj, function(err, character) {
             return res.send(character);
         });
 };
 
-exports.getCharactersByKeyword = function (req, res) {
+exports.getCharactersByKeyword = function(req, res) {
     var keyword = req.query.kw;
     var page = req.query.page || 1;
     var size = req.query.perPage || perPage;
@@ -146,27 +156,36 @@ exports.getCharactersByKeyword = function (req, res) {
             name: keywordReg
         })
         .lean()
-        .exec(function (err, characters) {
+        .exec(function(err, characters) {
             return res.send(characters);
         });
 };
 
-exports.getCharactersBySourceId = function (req, res) {
+exports.getCharactersBySourceId = function(req, res) {
     var sourceId = req.params.sourceId;
     var page = req.query.page || 1;
     var limit = req.query.perPage || perPage;
 
-    Character.paginate({sourceId: sourceId}, {page: page, limit: limit}, function (err, characters) {
+    Character.paginate({
+        sourceId: sourceId
+    }, {
+        page: page,
+        limit: limit
+    }, function(err, characters) {
 
-        Source.update({_id: sourceId}, {
+        Source.update({
+            _id: sourceId
+        }, {
 
             $inc: {
                 viewsCount: 1
             }
 
-        }, function (err, source) {
+        }, function(err, source) {
 
-            return res.send({objects: characters});
+            return res.send({
+                objects: characters
+            });
 
         });
     });
