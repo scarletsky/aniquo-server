@@ -13,6 +13,9 @@ var CharacterSchema = new Schema({
     info: {type: String, default: ''},
     avatar: {type: String},
     sourceId: {type: ObjectId},
+    likeIds: {type: Array, default: []},
+    likersCount: {type: Number, default: 0},
+    viewsCount: {type: Number, default: 0},
     quotesCount: {type: Number, default: 0},
     contributorId: {type: ObjectId},
     createdAt: {type: Date, default: Date.now}

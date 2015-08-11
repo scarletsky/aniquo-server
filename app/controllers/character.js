@@ -47,7 +47,12 @@ exports.getCharacters = function(req, res) {
 
     Character.paginate({}, {
         page: page,
-        limit: limit
+        limit: limit,
+        sortBy: {
+            viewsCount: -1,
+            likersCount: -1,
+            quotesCount: -1
+        }
     }, function(err, characters) {
         return res.send({
             objects: characters
