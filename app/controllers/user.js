@@ -71,11 +71,11 @@ exports.putUser = function(req, res) {
 
     if (!isChangePassword) {
         var data = {};
-        var fields = ['nickname', 'site', 'info', 'avatar'];
+        var fields = ['username', 'nickname', 'site', 'info', 'avatar'];
 
         for (var i = 0; i < fields.length; i++) {
             var field = fields[i];
-            var value = req.param(field);
+            var value = req.body[field];
 
             if (value) {
                 data[field] = value;
@@ -83,7 +83,10 @@ exports.putUser = function(req, res) {
         }
 
         User
-            .findByIdAndUpdate(userId, data, function(err, user) {
+            .findByIdAndUpdate(userId, data, {
+                new: true
+            }, function(err, user) {
+                delete user.passwordHash;
                 return res.send(user);
             });
 
