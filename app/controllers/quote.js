@@ -66,7 +66,7 @@ exports.postQuote = function(req, res) {
                 }
             }, function(err) {
 
-                return res.send(quote);
+                return res.send({_id: quote._id});
 
             });
 
@@ -177,8 +177,8 @@ exports.putQuoteById = function(req, res) {
     };
 
     Quote
-        .findByIdAndUpdate(quoteId, obj, function(err, quote) {
-            return res.send(quote);
+        .findByIdAndUpdate(quoteId, obj, {new: true}, function(err, quote) {
+            return res.send({_id: quote._id});
         });
 };
 
