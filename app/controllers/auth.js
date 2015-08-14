@@ -110,8 +110,7 @@ exports.verify = function(req, res) {
 
                     return res.status(403).send({
                         user: user,
-                        token: token,
-                        error: '你的帐号已经激活，不需要重复激活帐号'
+                        token: token
                     });
                 }
 
