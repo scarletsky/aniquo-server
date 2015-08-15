@@ -19,7 +19,8 @@
     "morgan": "^1.5.2",
     "nodemailer": "^1.4.0",
     "qn": "~1.0.1",
-    "request": "^2.60.0"
+    "request": "^2.60.0",
+    "wechat": "^2.0.1"
   },
   "devDependencies": {
     "shelljs": "^0.3.0"

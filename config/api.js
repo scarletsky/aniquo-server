@@ -9,6 +9,7 @@ var expressJwt = require('express-jwt');
 var customJwt = require('./middlewares/customJwt');
 var access = require('./middlewares/access');
 var incode = require('./middlewares/incode');
+var wechat = require('../app/utils/wechat');
 
 module.exports = function(app, config) {
     var apiPrefix = '/api';
@@ -56,4 +57,7 @@ module.exports = function(app, config) {
 
     // upload
     app.get(apiPrefix + '/upload/token', expressJwt(jwtOptions), upload.getUploadToken);
+
+    // wechat
+    app.use('/wechat', wechat.reply);
 };
