@@ -3,6 +3,7 @@ var Quote = require('../models').Quote;
 var Character = require('../models').Character;
 var User = require('../models').User;
 var utils = require('./utils');
+var qiniuClient = require('../utils/qiniu').client;
 var async = require('async');
 
 var env = process.env.NODE_ENV || 'development';
@@ -66,7 +67,9 @@ exports.postQuote = function(req, res) {
                 }
             }, function(err) {
 
-                return res.send({_id: quote._id});
+                return res.send({
+                    _id: quote._id
+                });
 
             });
 
@@ -169,7 +172,7 @@ exports.getQuoteById = function(req, res) {
 
 exports.putQuoteById = function(req, res) {
     var quoteId = req.params.quoteId;
-    var obj = {
+    var update = {
         characterIds: req.body.characterIds,
         quote: req.body.quote,
         reference: req.body.reference || '',
@@ -177,8 +180,22 @@ exports.putQuoteById = function(req, res) {
     };
 
     Quote
-        .findByIdAndUpdate(quoteId, obj, {new: true}, function(err, quote) {
-            return res.send({_id: quote._id});
+        .findById(quoteId, function(err, quote) {
+            if (update.scene !== '' && update.scene.localeCompare(quote.scene) !== 0) {
+                qiniuClient.delete(quote.scene, function(err) {
+                    console.log('qiniu client error');
+                    console.log(err);
+                });
+            }
+
+            Quote
+                .findByIdAndUpdate(quoteId, update, {
+                    new: true
+                }, function(err, quote) {
+                    return res.send({
+                        _id: quote._id
+                    });
+                });
         });
 };
 

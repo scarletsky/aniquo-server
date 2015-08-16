@@ -2,6 +2,7 @@ var Character = require('../models').Character;
 var Source = require('../models').Source;
 var User = require('../models').User;
 var utils = require('./utils');
+var qiniuClient = require('../utils/qiniu').client;
 var async = require('async');
 
 var env = process.env.NODE_ENV || 'development';
@@ -135,7 +136,7 @@ exports.getCharacterById = function(req, res) {
 
 exports.putCharacterById = function(req, res) {
     var characterId = req.params.characterId;
-    var obj = {
+    var update = {
         name: req.body.name,
         alias: req.body.alias || [],
         info: req.body.info || '',
@@ -144,8 +145,19 @@ exports.putCharacterById = function(req, res) {
     };
 
     Character
-        .findByIdAndUpdate(characterId, obj, function(err, character) {
-            return res.send(character);
+        .findById(characterId, function(err, character) {
+
+            if (update.avatar !== '' && update.avatar.localeCompare(character.avatar) !== 0) {
+                qiniuClient.delete(character.avatar, function(err) {
+                    console.log('qiniu client error');
+                    console.log(err);
+                });
+            }
+
+            Character
+                .findByIdAndUpdate(characterId, update, function(err, character) {
+                    return res.send(character);
+                });
         });
 };
 
