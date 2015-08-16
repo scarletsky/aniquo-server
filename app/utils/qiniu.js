@@ -8,6 +8,8 @@ var client = qn.create({
     domain: config.qiniu.domain
 });
 
+exports.client = client;
+
 exports.getUploadToken = function(req, res) {
     return res.send(client.uploadToken());
 };

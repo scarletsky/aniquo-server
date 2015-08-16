@@ -4,12 +4,12 @@ var character = require('../app/controllers/character');
 var quote = require('../app/controllers/quote');
 var search = require('../app/controllers/search');
 var auth = require('../app/controllers/auth');
-var upload = require('../app/controllers/upload');
 var expressJwt = require('express-jwt');
 var customJwt = require('./middlewares/customJwt');
 var access = require('./middlewares/access');
 var incode = require('./middlewares/incode');
 var wechat = require('../app/utils/wechat');
+var qiniu = require('../app/utils/qiniu');
 
 module.exports = function(app, config) {
     var apiPrefix = '/api';
@@ -56,7 +56,7 @@ module.exports = function(app, config) {
     app.get(apiPrefix + '/search', search.search);
 
     // upload
-    app.get(apiPrefix + '/upload/token', expressJwt(jwtOptions), upload.getUploadToken);
+    app.get(apiPrefix + '/upload/token', expressJwt(jwtOptions), qiniu.getUploadToken);
 
     // wechat
     app.use('/wechat', wechat.reply);
