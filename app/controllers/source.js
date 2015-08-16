@@ -2,6 +2,7 @@ var Source = require('../models').Source;
 var Quote = require('../models').Quote;
 var User = require('../models').User;
 var utils = require('./utils');
+var qiniuClient = require('../utils/qiniu').client;
 var async = require('async');
 
 var env = process.env.NODE_ENV || 'development';
@@ -111,7 +112,7 @@ exports.getSourceById = function(req, res) {
 
 exports.putSourceById = function(req, res) {
     var sourceId = req.params.sourceId;
-    var obj = {
+    var update = {
         name: req.body.name,
         alias: req.body.alias || [],
         info: req.body.info || '',
@@ -119,9 +120,20 @@ exports.putSourceById = function(req, res) {
     };
 
     Source
-        .findByIdAndUpdate(sourceId, obj, function(err, source) {
-            return res.send(source);
+        .findById(sourceId, function(err, source) {
+
+            if (update.cover !== '' && update.cover.localeCompare(source.cover) !== 0) {
+                qiniuClient.delete(source.cover, function(err) {
+                    console.log('qiniu client error');
+                    console.log(err);
+                });
+            }
+
+            Source.findByIdAndUpdate(sourceId, update, {new: true}, function(err, source) {
+                return res.send(source);
+            });
         });
+
 };
 
 exports.getSourcesByKeyword = function(req, res) {
