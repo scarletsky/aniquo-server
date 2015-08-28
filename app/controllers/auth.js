@@ -12,7 +12,7 @@ function genLoginToken(user) {
     };
 
     var token = jwt.sign(user, config.sessionSecret, {
-        expiresInMinutes: 60 * 5
+        expiresInMinutes: 60 * 24 * 30
     });
 
     return token;
