@@ -137,18 +137,21 @@ exports.putSourceById = function(req, res) {
 };
 
 exports.getSourcesByKeyword = function(req, res) {
-    var keyword = req.query.kw;
+    var keyword = req.query.keyword;
     var page = req.query.page || 1;
-    var size = req.query.perPage || perPage;
+    var limit = req.query.perPage || perPage;
 
     var keywordReg = new RegExp('.*' + keyword + '.*');
 
     Source
-        .find({
+        .paginate({
             name: keywordReg
-        })
-        .lean()
-        .exec(function(err, sources) {
-            return res.send(sources);
+        }, {
+            page: page,
+            limit: limit
+        }, function(err, sources) {
+            return res.send({
+                objects: sources
+            });
         });
 };

@@ -162,19 +162,22 @@ exports.putCharacterById = function(req, res) {
 };
 
 exports.getCharactersByKeyword = function(req, res) {
-    var keyword = req.query.kw;
+    var keyword = req.query.keyword;
     var page = req.query.page || 1;
-    var size = req.query.perPage || perPage;
+    var limit = req.query.perPage || perPage;
 
     var keywordReg = new RegExp('.*' + keyword + '.*');
 
     Character
-        .find({
+        .paginate({
             name: keywordReg
-        })
-        .lean()
-        .exec(function(err, characters) {
-            return res.send(characters);
+        }, {
+            page: page,
+            limit: limit
+        }, function(err, characters) {
+            return res.send({
+                objects: characters
+            });
         });
 };
 
