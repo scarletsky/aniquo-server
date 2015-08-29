@@ -18,10 +18,11 @@ var SourceSchema = new Schema({
     charactersCount: {type: Number, default: 0},
     quotesCount: {type: Number, default: 0},
     contributorId: {type: ObjectId},
-    createdAt: {type: Date, default: Date.now}
+    createdAt: {type: Date, default: Date.now},
+    updatedAt: {type: Date, default: Date.now}
 });
 
-SourceSchema.index({name: 1, alias: 1});
+SourceSchema.index({name: 1, alias: 1, createdAt: -1, updatedAt: -1});
 SourceSchema.plugin(mongoosePaginate);
 
 mongoose.model('Source', SourceSchema);

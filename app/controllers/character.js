@@ -50,6 +50,7 @@ exports.getCharacters = function(req, res) {
         page: page,
         limit: limit,
         sortBy: {
+            updatedAt: -1,
             viewsCount: -1,
             likersCount: -1,
             quotesCount: -1
@@ -141,7 +142,8 @@ exports.putCharacterById = function(req, res) {
         alias: req.body.alias || [],
         info: req.body.info || '',
         sourceId: req.body.sourceId,
-        avatar: req.body.avatar || ''
+        avatar: req.body.avatar || '',
+        updatedAt: new Date()
     };
 
     Character

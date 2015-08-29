@@ -50,6 +50,7 @@ exports.getSources = function(req, res) {
         page: page,
         limit: limit,
         sortBy: {
+            updatedAt: -1,
             viewsCount: -1,
             charactersCount: -1,
             quotesCount: -1
@@ -116,7 +117,8 @@ exports.putSourceById = function(req, res) {
         name: req.body.name,
         alias: req.body.alias || [],
         info: req.body.info || '',
-        cover: req.body.cover || ''
+        cover: req.body.cover || '',
+        updatedAt: new Date()
     };
 
     Source

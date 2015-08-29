@@ -17,7 +17,10 @@ exports.getQuotes = function(req, res) {
     Quote.paginate({}, {
         page: page,
         limit: limit,
-        lean: true
+        lean: true,
+        sortBy: {
+            updatedAt: -1
+        }
     }, function(err, quotes) {
 
         async.mapSeries(quotes, function(q, callback) {
@@ -176,7 +179,8 @@ exports.putQuoteById = function(req, res) {
         characterIds: req.body.characterIds,
         quote: req.body.quote,
         reference: req.body.reference || '',
-        scene: req.body.scene || ''
+        scene: req.body.scene || '',
+        updatedAt: new Date()
     };
 
     Quote

@@ -17,9 +17,10 @@ var QuoteSchema = new Schema({
     reference: {type: String},
     contributorId: {type: ObjectId},
     createdAt: {type: Date, default: Date.now},
+    updatedAt: {type: Date, default: Date.now}
 });
 
-QuoteSchema.index({_id: -1, likeIds: -1, createdAt: -1});
+QuoteSchema.index({_id: -1, likeIds: -1, createdAt: -1, updatedAt: -1});
 QuoteSchema.plugin(mongoosePaginate);
 
 mongoose.model('Quote', QuoteSchema);

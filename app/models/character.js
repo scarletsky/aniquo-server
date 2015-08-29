@@ -18,10 +18,11 @@ var CharacterSchema = new Schema({
     viewsCount: {type: Number, default: 0},
     quotesCount: {type: Number, default: 0},
     contributorId: {type: ObjectId},
-    createdAt: {type: Date, default: Date.now}
+    createdAt: {type: Date, default: Date.now},
+    updatedAt: {type: Date, default: Date.now}
 });
 
-CharacterSchema.index({name: 1, alias: 1});
+CharacterSchema.index({name: 1, alias: 1, createdAt: -1, updatedAt: -1});
 CharacterSchema.plugin(mongoosePaginate);
 
 mongoose.model('Character', CharacterSchema);
