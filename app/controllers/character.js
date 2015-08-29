@@ -172,7 +172,14 @@ exports.getCharactersByKeyword = function(req, res) {
 
     Character
         .paginate({
-            name: keywordReg
+            $or: [
+                { name: keywordReg },
+                {
+                    alias: {
+                        $in: [ keywordReg ]
+                    }
+                }
+            ]
         }, {
             page: page,
             limit: limit

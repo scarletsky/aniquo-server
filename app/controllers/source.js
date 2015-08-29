@@ -147,7 +147,14 @@ exports.getSourcesByKeyword = function(req, res) {
 
     Source
         .paginate({
-            name: keywordReg
+            $or: [
+                { name: keywordReg },
+                {
+                    alias: {
+                        $in: [ keywordReg ]
+                    }
+                }
+            ]
         }, {
             page: page,
             limit: limit
