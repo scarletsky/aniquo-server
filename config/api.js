@@ -16,7 +16,7 @@ module.exports = function(app, config) {
     var jwtOptions = {
         secret: config.sessionSecret
     };
-
+    
     // auth
     app.post(apiPrefix + '/login', auth.login);
     app.post(apiPrefix + '/signup', user.checkUser, incode, auth.signup);
@@ -59,5 +59,6 @@ module.exports = function(app, config) {
     app.get(apiPrefix + '/upload/token', expressJwt(jwtOptions), qiniu.getUploadToken);
 
     // wechat
-    app.use('/wechat', wechat.reply);
+    app.use(wechat.router);
+
 };
