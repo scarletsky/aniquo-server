@@ -8,61 +8,47 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var router = new Router();
 
-if (process.env.WX_ACCESS_TOKEN) {
-
-    request(
-    {
-        method: 'POST',
-        url: 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' +
-             process.env.WX_ACCESS_TOKEN,
-        body: config.wechat.menus,
-        json: true
-    }, function(err, res, body) {
-        console.log(err);
-        console.log(body);
-    });
-}
-
 router
     .use('/wechat', wechat(config.wechat, function(req, res, next) {
         var message = req.weixin;
 
-        if (message.MsgType === 'event') {
+
+        if (message.MsgType === 'text') {
             var options = {
                 model: null,
                 query: {},
                 limit: 5
             };
-            switch (message.EventKey) {
-                case 'GET_RANDOM_SOURCE':
+            switch (message.Content) {
+                case 'rs':
                     options.model = Source;
                     options.sort = '-viewsCount';
                     listResources(req, res, options);
                     break;
 
-                case 'GET_LATEST_SOURCES':
+                case 'ls':
                     options.model = Source;
                     options.sort = '-createdAt';
                     listResources(req, res, options);
                     break;
 
-                case 'GET_RANDOM_CHARACTER':
+                case 'rc':
                     options.model = Character;
                     options.sort = '-viewsCount';
                     listResources(req, res, options);
                     break;
 
-                case 'GET_LATEST_CHARACTERS':
+                case 'lc':
                     options.model = Character;
                     options.sort = '-createdAt';
                     listResources(req, res, options);
                     break;
 
-                case 'GET_RANDOM_QUOTE':
+                case 'rq':
                     getQuote(req, res, options);
                     break;
 
-                case 'GET_LATEST_QUOTE':
+                case 'lq':
                     options.sort = '-createdAt';
                     getQuote(req, res, options);
                     break;
